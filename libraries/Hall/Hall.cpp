@@ -1,51 +1,39 @@
 //**************************************
-//*¿N∫∏∑P¥˙æπ library for Arduino Uno
+//*ÈúçÁàæÊÑüÊ∏¨Âô®
 //*2016-03-10
-//*ßd¨R¶®
+//*Âê≥Êò±Êàê
 //**************************************
-// For Arduino 1.0 and earlier
-#if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
-
-#include"Hall.h"
-//´ÿ∫c§∏
-void Hall::Hall() {
-} 
-void Hall::set(unsigned char pin, unsigned double r); 
-  m_pin = pin; 
-	m_r = r;
-  pinMode(m_pin, INPUT_PULLUP);
-  if(m_pin==2) {
-  	attachInterrupt(0, this.stateUpdate, FALLING);
-	}
-  if(m_pin==3) {
-  	attachInterrupt(1, this.stateUpdate, FALLING);
-	}
+#include "Hall.h"
+void Hall::set(int pin, float r) {
+  _pin = pin; 
+  _r = r;
+  _pml = 2*PI*_r;
+  _preTime = 0;       //Ââç‰∏ÄÂÄãÊôÇÈñìÈªû
+  _nowTime = 0;       //ÁèæÂú®ÁöÑÊôÇÈñìÈªû
+  _preSpeed = 0;
+  _nowSpeed = 0;
+  _nowAcc = 0;    
+  pinMode(_pin, INPUT_PULLUP);
 }
-//§Ë™k
 void Hall::stateUpdate(){
-  this.nowTime = millis();
-    if(this.preTime==0) {
-      this.preTime = this.nowTime;
-  }else if(this.preSpeed==0){
-      this.nowSpeed = this.pml/(this.nowTime-this.preTime)*36;    //" *36 " ±o(km/hr)
-      this.preTime = this.nowTime;
-      this.preSpeed = this.nowSpeed;
+  _nowTime = millis();
+  if(_preTime==0) {
+    _preTime = _nowTime;
+  }else if(_preSpeed==0){
+    _nowSpeed = _pml/(_nowTime-_preTime);   
+    _preTime = _nowTime;
+    _preSpeed = _nowSpeed;
   }else {
-      this.nowSpeed = this.pml/(this.nowTime-this.preTime)*36;
-      this.nowAcc = (this.nowSpeed-this.preSpeed)/(this.nowTime-this.preTime)/3.6;//" /3.6 "±o(m/s) 
-      this.preTime = this.nowTime;
-      this.preSpeed = this.nowSpeed;
-  }
+    _nowSpeed = _pml/(_nowTime-_preTime);
+    _nowAcc = (_nowSpeed-_preSpeed)/(_nowTime-_preTime);  
+    _preTime = _nowTime;
+    _preSpeed = _nowSpeed;
+   }
 }
-//∂«≠»
-double Hall::getSpeed() {  
-  return this.nowSpeed;
+float Hall::getSpeed() {
+  return _nowSpeed*36;  //" *36 " Âæó(km/hr)
 }
-double Hall::getAcc() {
-	stateUpdate();
-  return this.nowAcc;
+float Hall::getAcc() {
+  return _nowAcc*10;  //" *10 "Âæó(m/s^2) 
 }

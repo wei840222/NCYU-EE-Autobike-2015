@@ -1,6 +1,6 @@
 // I2Cdev library collection - Main I2C device class header file
 // Abstracts bit and byte I2C R/W functions into a convenient class
-// 2013-06-05 by Jeff Rowberg <jeff@rowberg.net>
+// 6/9/2012 by Jeff Rowberg <jeff@rowberg.net>
 //
 // Changelog:
 //      2013-05-06 - add Francesco Ferrara's Fastwire v0.24 implementation with small modifications
@@ -49,10 +49,8 @@ THE SOFTWARE.
 // -----------------------------------------------------------------------------
 // I2C interface implementation setting
 // -----------------------------------------------------------------------------
-#ifndef I2CDEV_IMPLEMENTATION
 #define I2CDEV_IMPLEMENTATION       I2CDEV_ARDUINO_WIRE
 //#define I2CDEV_IMPLEMENTATION       I2CDEV_BUILTIN_FASTWIRE
-#endif // I2CDEV_IMPLEMENTATION
 
 // comment this out if you are using a non-optimal IDE/implementation setting
 // but want the compiler to shut up about it
@@ -84,11 +82,6 @@ THE SOFTWARE.
     #if I2CDEV_IMPLEMENTATION == I2CDEV_I2CMASTER_LIBRARY
         #include <I2C.h>
     #endif
-#endif
-
-#ifdef SPARK
-    #include <spark_wiring_i2c.h>
-    #define ARDUINO 101
 #endif
 
 // 1000ms default read timeout (modify with "I2Cdev::readTimeout = [ms];")

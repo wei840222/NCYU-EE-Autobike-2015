@@ -1,41 +1,29 @@
 //**************************************
-//*ÀNº¸·P´ú¾¹ library for Arduino Uno
+//*éœçˆ¾æ„Ÿæ¸¬å™¨
 //*2016-03-10
-//*§d¬R¦¨
+//*å³æ˜±æˆ
 //**************************************
 #ifndef Hall_h
 #define Hall_h
 
-#include <inttypes.h>
-/*
-// For Arduino 1.0 and earlier
-#if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
-*/
-class Hall{
-public:
-  //@ÅÜ¼Æ
-	unsigned long 
-  unsigned char m_pin;
-	unsigned double m_r = 29;				//(cm)
-  unsigned double pml = 2*PI*m_r;
-	unsigned double preTime = 0;       //«e¤@­Ó®É¶¡ÂI
-  unsigned double nowTime = 0;       //²{¦bªº®É¶¡ÂI
-  double preSpeed = 0;
-  double nowSpeed = 0;
-  double nowAcc = 0;
-  //«Øºc¤¸
-  void Hall(void);
-  //¤èªk
-  void set(unsigned char pin, unsigned double r); 
-  void stateUpdate();
-  double getSpeed();
-  double getAcc();
-protected:
-private:
+
+class Hall
+{
+  public:
+    void set(int pin, float r);
+    void stateUpdate();
+    float getSpeed();
+    float getAcc();
+  private:
+    int _pin;
+    float _r;
+    float _pml;
+    float _preTime;       //å‰ä¸€å€‹æ™‚é–“é»
+    float _nowTime;       //ç¾åœ¨çš„æ™‚é–“é»
+    float _preSpeed;
+    float _nowSpeed;
+    float _nowAcc;    
 };
 
 #endif
