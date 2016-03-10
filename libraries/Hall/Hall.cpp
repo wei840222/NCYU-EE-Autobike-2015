@@ -5,7 +5,7 @@
 //**************************************
 #include "Arduino.h"
 #include "Hall.h"
-void Hall::set(int pin, float r) {
+void Hall::set(int pin, double r) {
   _pin = pin; 
   _r = r;
   _pml = 2*PI*_r;
@@ -31,9 +31,9 @@ void Hall::stateUpdate(){
     _preSpeed = _nowSpeed;
    }
 }
-float Hall::getSpeed() {
-  return _nowSpeed*36;  //" *36 " 得(km/hr)
+double Hall::getSpeed() {
+  return _nowSpeed*36.0;  //" *36.0 " 得(km/hr)
 }
-float Hall::getAcc() {
-  return _nowAcc*10;  //" *10 "得(m/s^2) 
+double Hall::getAcc() {
+  return _nowAcc*10.0;  //" *10.0 "得(m/s^2) 
 }

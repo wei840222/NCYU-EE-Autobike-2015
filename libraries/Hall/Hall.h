@@ -11,19 +11,19 @@
 class Hall
 {
   public:
-    void set(int pin, float r);
+    void set(int pin, double r);
     void stateUpdate();
-    float getSpeed();
-    float getAcc();
+    double getSpeed();
+    double getAcc();
   private:
     int _pin;
-    float _r;
-    float _pml;
-    float _preTime;       //前一個時間點
-    float _nowTime;       //現在的時間點
-    float _preSpeed;
-    float _nowSpeed;
-    float _nowAcc;    
+    double _r;
+    double _pml;
+    volatile double _preTime;       //前一個時間點
+   	volatile double _nowTime;       //現在的時間點
+    volatile double _preSpeed;
+    volatile double _nowSpeed;
+    volatile double _nowAcc;    
 };
 
 #endif
