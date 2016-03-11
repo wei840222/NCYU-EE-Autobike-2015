@@ -1,4 +1,6 @@
-#include "LiquidCrystal.h"
+#include <Wire.h>
+#include <LiquidCrystal.h>
+
 #include "I2Cdev.h"
 #include "MPU6050.h"
 
@@ -23,9 +25,9 @@ double GetAngleY(){  //計算Y軸角度值
 String HC05_GetString(){  //從藍芽接收字串
   byte BTbuffer;
   String BTstring;
-  if(Serial1.available()){
-    while(Serial1.available()){
-      BTbuffer = Serial1.read();
+  if(Serial.available()){
+    while(Serial.available()){
+      BTbuffer = Serial.read();
       BTstring += (char)BTbuffer;
     }
   }
@@ -35,14 +37,14 @@ String HC05_GetString(){  //從藍芽接收字串
 void HC05_SendString(String BTstring){  //從藍芽送出字串
   byte BTbuffer[32];
   BTstring.getBytes(BTbuffer, BTstring.length());
-  if(Serial1.available())
+  if(Serial.available())
     for(int i = 0;i < BTstring.length();i++)
-      Serial1.write(BTbuffer[i]);
+      Serial.write(BTbuffer[i]);
 }
 
 void setup(){
   //藍芽HC-05傳輸速率
-  Serial1.begin(9600);
+  Serial.begin(9600);
 
   //設定LCD游標值
   LCD1602.begin(16, 2);
