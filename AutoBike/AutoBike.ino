@@ -5,6 +5,7 @@
 //全域變數
 double Slope = 0;
 double Acceleration = 0;
+String BTMsg = "";
 
 //建立裝置物件
 MPU6050 GY521;
@@ -20,7 +21,7 @@ double GetAngleY(){  //計算Y軸角度值
 }
 
 /////////////////////// HC-05_Functions ///////////////////////
-String HC05_GetString(){  //從藍芽接收字串
+String HC05_ReadString(){  //從藍芽接收字串
   byte BTbuffer;
   String BTstring;
   if(Serial1.available()){
@@ -29,18 +30,19 @@ String HC05_GetString(){  //從藍芽接收字串
       BTstring += (char)BTbuffer;
     }
   }
-  return BTstring;
+    return BTstring;
 }
 
-void HC05_SendString(String BTstring){  //從藍芽送出字串
-  byte BTbuffer[32];
-  BTstring.getBytes(BTbuffer, BTstring.length());
+void HC05_WriteString(String BTstring){  //從藍芽送出字串
+  char BTbuffer[32];
+  BTstring.toCharArray(BTbuffer, BTstring.length() + 1);
   if(Serial1.available())
-    for(int i = 0;i < BTstring.length();i++)
-      Serial1.write(BTbuffer[i]);
+    for(int i=0 ; i<=BTstring.length() ; i++)
+      Serial1.write((byte)BTbuffer[i]);
 }
 
 void setup(){
+  Serial.begin(250000);
   //藍芽HC-05傳輸速率
   Serial1.begin(9600);
 
@@ -69,12 +71,15 @@ void setup(){
 void loop(){
   //取得角度值
   Slope = GetAngleY();
+  //同步藍芽資料
+  HC05_WriteString((String)Slope);
+  BTMsg = HC05_ReadString();
   //顯示
   LCD1602.print("Slope:");
-  LCD1602.print((int)Slope);
+  LCD1602.print(Slope);
   LCD1602.setCursor(0, 1);
   LCD1602.print("BTMsg:");
-  LCD1602.print(HC05_GetString());
-  delay(1000);
+  LCD1602.print(BTMsg);
+  delay(200);
   LCD1602.clear();
 }
