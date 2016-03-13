@@ -1,5 +1,5 @@
-#ifndef _HC05_H_
-#define _HC05_H_
+#ifndef HC05_h
+#define HC05_h
 
 #include "Arduino.h"
 
@@ -10,4 +10,4 @@ public:
 private:
 };
 
-#endif /* _HC05_H_ */
+#endif
