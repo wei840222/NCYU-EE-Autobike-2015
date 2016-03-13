@@ -12,36 +12,6 @@ LiquidCrystal LCD1602(7, 6, 5, 4, 3, 2);
 MPU6050 GY521;
 HC05 BT;
 
-/////////////////////// GY-521_Functions ///////////////////////
-double GetAngleY(){  //計算Y軸角度值
-  int16_t ax, ay, az;
-  double Vax_offset = Acceleration * sin(Slope) * 16384 / 9.8;
-  double Vay_offset = Acceleration * cos(Slope) * 16384 / 9.8;
-  GY521.getAcceleration(&ax, &ay, &az);
-  return 60 * atan((ay - Vay_offset) / sqrt(pow(ax - Vax_offset, 2) + pow(az, 2)));
-}
-
-/////////////////////// HC-05_Functions ///////////////////////
-String HC05_ReadString(){  //從藍芽接收字串
-  byte BTbuffer;
-  String BTstring;
-  if(Serial1.available()){
-    while(Serial1.available()){
-      BTbuffer = Serial1.read();
-      BTstring += (char)BTbuffer;
-    }
-  }
-  return BTstring;
-}
-
-void HC05_WriteString(String BTstring){  //從藍芽送出字串
-  char BTbuffer[32];
-  BTstring.toCharArray(BTbuffer, BTstring.length() + 1);
-  if(Serial1.available())
-    for(int i=0 ; i<=BTstring.length() ; i++)
-      Serial1.write((byte)BTbuffer[i]);
-}
-
 void setup(){
   Serial.begin(250000);
   //藍芽HC-05傳輸速率
@@ -83,4 +53,13 @@ void loop(){
   LCD1602.print(BTMsg);
   delay(200);
   LCD1602.clear();
+}
+
+/////////////////////// GY-521_Functions ///////////////////////
+double GetAngleY(){  //計算Y軸角度值
+  int16_t ax, ay, az;
+  double Vax_offset = Acceleration * sin(Slope) * 16384 / 9.8;
+  double Vay_offset = Acceleration * cos(Slope) * 16384 / 9.8;
+  GY521.getAcceleration(&ax, &ay, &az);
+  return 60 * atan((ay - Vay_offset) / sqrt(pow(ax - Vax_offset, 2) + pow(az, 2)));
 }

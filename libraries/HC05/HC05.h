@@ -1,5 +1,5 @@
-#ifndef HC05_h
-#define HC05_h
+#ifndef _HC05_H_
+#define _HC05_H_
 
 #include "Arduino.h"
 
