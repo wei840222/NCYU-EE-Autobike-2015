@@ -1,5 +1,4 @@
 #include "LiquidCrystal.h"
-#include "I2Cdev.h"
 #include "MPU6050.h"
 
 //全域變數
@@ -30,7 +29,7 @@ String HC05_ReadString(){  //從藍芽接收字串
       BTstring += (char)BTbuffer;
     }
   }
-    return BTstring;
+  return BTstring;
 }
 
 void HC05_WriteString(String BTstring){  //從藍芽送出字串
