@@ -1,5 +1,6 @@
-#include "LiquidCrystal.h"
+#include <LiquidCrystal.h>
 #include "MPU6050.h"
+#include "HC05.h"
 
 //全域變數
 double Slope = 0;
@@ -7,8 +8,9 @@ double Acceleration = 0;
 String BTMsg = "";
 
 //建立裝置物件
-MPU6050 GY521;
 LiquidCrystal LCD1602(7, 6, 5, 4, 3, 2);
+MPU6050 GY521;
+HC05 BT;
 
 /////////////////////// GY-521_Functions ///////////////////////
 double GetAngleY(){  //計算Y軸角度值
