@@ -1,6 +1,6 @@
 #include "HC05.h"
 
-HC05::read() {
+String HC05::read() {
 	byte buffer;
 	String string;
 	if (Serial1.available()) {
@@ -9,10 +9,10 @@ HC05::read() {
 			string += (char)buffer;
 		}
 	}
-	return BTstring;
+	return string;
 }
 
-HC05::write(String input) {
+void HC05::write(String input) {
 	char buffer[32];
 	input.toCharArray(buffer, input.length() + 1);
 	if (Serial1.available())

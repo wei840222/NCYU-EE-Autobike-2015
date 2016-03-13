@@ -3,11 +3,11 @@
 
 #include "Arduino.h"
 
-class HC05() {
+class HC05 {
 public:
 	String read();
 	void write(String input);
 private:
-}
+};
 
-#endif
+#endif /* _HC05_H_ */

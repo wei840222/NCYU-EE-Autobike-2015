@@ -73,8 +73,8 @@ void loop(){
   //取得角度值
   Slope = GetAngleY();
   //同步藍芽資料
-  HC05_WriteString((String)Slope);
-  BTMsg = HC05_ReadString();
+  BT.write((String)Slope);
+  BTMsg = BT.read();
   //顯示
   LCD1602.print("Slope:");
   LCD1602.print(Slope);
