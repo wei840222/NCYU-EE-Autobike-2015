@@ -1,26 +1,18 @@
 #######################################
-# Syntax Coloring Map For Timer Library
+# Syntax Coloring Map For Hall
 #######################################
 
 #######################################
 # Datatypes (KEYWORD1)
 #######################################
-
-Timer	KEYWORD1
-Event	KEYWORD1
+HC05	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
 
-every	KEYWORD2
-after	KEYWORD2
-oscillate	KEYWORD2
-pulse	KEYWORD2
-pulseImmediate KEYWORD2
-stop	KEYWORD2
-update	KEYWORD2
-findFreeEventIndex	KEYWORD2
+read	KEYWORD2
+write	KEYWORD2
 
 #######################################
 # Instances (KEYWORD2)
