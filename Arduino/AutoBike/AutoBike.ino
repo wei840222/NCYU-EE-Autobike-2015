@@ -1,14 +1,13 @@
 //***************************************************************
-//載入函式庫*
+//載入函式庫
 //***************************************************************
-#include <Wire.h>
 #include <LiquidCrystal.h>
-
 #include "MPU6050.h"
 #include "Hall.h"
 #include "HC05.h"
+
 //***************************************************************
-//***************************************************************
+//定義腳位
 //***************************************************************
 #define pin_bluetooth_RXD 0
 #define pin_bluetooth_TXD 1
@@ -25,8 +24,9 @@
 #define pin_scl A5
 
 //***************************************************************
-//常數,全域變數
+//常數 and 全域變數
 //***************************************************************
+//請註解一下單位
 const int baudrate = 9600;
 const double gear_R = 10;
 const double wheel_R = 29;
@@ -44,11 +44,13 @@ HC05 BT(baudrate);
 //***************************************************************
 //初始化設定
 //***************************************************************
-void setup(){
+void setup() {
   //霍爾感測器初始化
-  H1.set(pin_hall_1, gear_R);  //位於踏板附近
+  //踏板
+  H1.set(pin_hall_1, gear_R);
   attachInterrupt(0, ISR_0, FALLING);
-  H2.set(pin_hall_2, wheel_R);  //位於後輪附近
+  //後輪
+  H2.set(pin_hall_2, wheel_R);
   attachInterrupt(0, ISR_1, FALLING);
   
   //初始化LCD
@@ -58,79 +60,25 @@ void setup(){
   GY521.initialize();
   
   //連線檢查
-  testAllDrives();
+  testDrives();
 }
 
 //***************************************************************
-//更新
+//主迴圈
 //***************************************************************
-void loop(){
+void loop() {
   drivesUpdate();
-  show();
+  showLCD();
+  syncBT();
 }
 
 //***************************************************************
 //中斷副程式 for 霍爾感應器
 //***************************************************************
-void ISR_0(){
+void ISR_0() {
   H1.stateUpdate();
 }
 
-void ISR_1(){
+void ISR_1() {
   H2.stateUpdate();
-}
-//***************************************************************
-//
-//***************************************************************
-void testAllDrives() {
-  do {
-     if(!Serial.available()){
-      LCD1602.print("BT connect failed");
-      delay(1000);
-      LCD1602.clear();
-     }
-  }while(!Serial.available()); 
-  do {
-    if(!GY521.testConnection()){
-      LCD1602.print("GY521 connect failed");
-      delay(1000);
-      LCD1602.clear();
-      BT.write("#GY521 connect failed\n");
-    }
-  }while(!GY521.testConnection());
-  LCD1602.print("All drives are ready!");
-  delay(1500);
-  LCD1602.clear();
-  BT.write("#All drives are ready!\n");
-}
-//***************************************************************
-//更新函式
-//***************************************************************
-void drivesUpdate() {
-  gySlope = GetAngleY();
-  gyAcceleration = H2.getAcc();
-}
-
-void show() {
-  LCD1602.print("Slope: ");
-  LCD1602.print((int)gySlope);
-  delay(1000);
-  LCD1602.clear();
-  String str;
-  str += (String)H2.getSpeed();
-  str += ":";
-  str += (String)gySlope;
-  str += "\n";
-  BT.write(str);
-}
-
-//***************************************************************
-/////////////////////// GY-521_Functions ///////////////////////
-//***************************************************************
-double GetAngleY(){  //計算Y軸角度值
-  int16_t ax, ay, az;
-  double Vax_offset = gyAcceleration * sin(gySlope) * 16384 / 9.8;
-  double Vay_offset = gyAcceleration * cos(gySlope) * 16384 / 9.8;
-  GY521.getAcceleration(&ax, &ay, &az);
-  return 60 * atan((ay - Vay_offset) / sqrt(pow(ax - Vax_offset, 2) + pow(az, 2)));
 }
