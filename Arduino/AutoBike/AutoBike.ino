@@ -14,9 +14,9 @@
 #define pin_hall_1 2
 #define pin_hall_2 3
 #define pin_lcd_RS 9
-#define pin_lcd_E 8 
+#define pin_lcd_E 8
 #define pin_lcd_D4 7
-#define pin_lcd_D5 6 
+#define pin_lcd_D5 6
 #define pin_lcd_D6 5
 #define pin_lcd_D7 4
 #define pin_pwm_output 10
@@ -52,13 +52,13 @@ void setup() {
   //後輪
   H2.set(pin_hall_2, wheel_R);
   attachInterrupt(0, ISR_1, FALLING);
-  
+
   //初始化LCD
   LCD1602.begin(16, 2);
   LCD1602.autoscroll();
   //初始化GY-521
   GY521.initialize();
-  
+
   //連線檢查
   testDrives();
 }
