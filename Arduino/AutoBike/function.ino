@@ -3,20 +3,20 @@
 //***************************************************************
 void testDrives() {
   do {
-     if(!Serial.available()) {
+    if (!Serial.available()) {
       LCD1602.print("BT connect failed");
       delay(1000);
       LCD1602.clear();
-     }
-  } while(!Serial.available()); 
+    }
+  } while (!Serial.available());
   do {
-    if(!GY521.testConnection()) {
+    if (!GY521.testConnection()) {
       LCD1602.print("GY521 connect failed");
       delay(1000);
       LCD1602.clear();
       BT.write("#GY521 connect failed\n");
     }
-  } while(!GY521.testConnection());
+  } while (!GY521.testConnection());
   LCD1602.print("All drives are ready!");
   delay(1500);
   LCD1602.clear();
