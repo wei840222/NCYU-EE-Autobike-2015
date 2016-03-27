@@ -3,8 +3,19 @@
 //*2016-03-10
 //*吳昱成
 //**************************************
-#include "Arduino.h"
 #include "Hall.h"
+
+Hall::Hall(int pin, double r) {
+	_pin = pin;
+	_r = r;
+	_pml = 2 * PI*_r;
+	_preTime = 0;       //前一個時間點
+	_nowTime = 0;       //現在的時間點
+	_preSpeed = 0;
+	_nowSpeed = 0;
+	_nowAcc = 0;
+	pinMode(_pin, INPUT_PULLUP);
+}
 void Hall::set(int pin, double r) {
   _pin = pin; 
   _r = r;

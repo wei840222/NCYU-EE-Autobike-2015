@@ -8,14 +8,14 @@
 
 #include "Arduino.h"
 
-class Hall
-{
-  public:
-    void set(int pin, double r);
+class Hall {
+public:
+	Hall(int, double);
+    void set(int, double);
     void stateUpdate();
     double getSpeed();
     double getAcc();
-  private:
+private:
     int _pin;
     double _r;
     double _pml;
