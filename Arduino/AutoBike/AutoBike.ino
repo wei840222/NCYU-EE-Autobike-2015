@@ -26,12 +26,12 @@
 //***************************************************************
 //常數 and 全域變數
 //***************************************************************
-//請註解一下單位
-const int baudrate = 9600;
-const double gear_R = 10;
-const double wheel_R = 29;
-double gySlope = 0;
-double gyAcceleration = 0;
+
+const int baudrate = 9600;  //  bps
+const double gear_R = 10;   //  cm
+const double wheel_R = 29;  //  cm
+double gySlope = 0;         //  degree
+double gyAcceleration = 0;  //  N/s^2
 
 //***************************************************************
 //建立裝置物件
