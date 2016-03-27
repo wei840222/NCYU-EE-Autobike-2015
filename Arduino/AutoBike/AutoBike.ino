@@ -38,19 +38,17 @@ double gyAcceleration = 0;
 //***************************************************************
 LiquidCrystal LCD1602(pin_lcd_RS, pin_lcd_E, pin_lcd_D4, pin_lcd_D5, pin_lcd_D6, pin_lcd_D7);
 MPU6050 GY521;
-Hall H1, H2;
+Hall H1(pin_hall_1, gear_R), H2(pin_hall_2, wheel_R);
 HC05 BT(baudrate);
 
 //***************************************************************
 //初始化設定
 //***************************************************************
 void setup() {
-  //霍爾感測器初始化
+  //霍爾感測器中斷初始化
   //踏板
-  H1.set(pin_hall_1, gear_R);
   attachInterrupt(0, ISR_0, FALLING);
   //後輪
-  H2.set(pin_hall_2, wheel_R);
   attachInterrupt(0, ISR_1, FALLING);
 
   //初始化LCD
