@@ -1,0 +1,3 @@
+[submodule "Arduino/libraries"]
+	path = Arduino/libraries
+	url = C:/Users/James/Documents/Arduino/libraries
