@@ -54,8 +54,8 @@ double pedalPower = 0;
 //***************************************************************
 LiquidCrystal LCD1602(pin_lcd_RS, pin_lcd_E, pin_lcd_D4, pin_lcd_D5, pin_lcd_D6, pin_lcd_D7);
 MPU6050 GY521;
-Hall H1(pin_hall_1, gear_R), H2(pin_hall_2, wheel_R);
-HC05 BT(baudrate);
+Hall Gear(pin_hall_1, gear_R), Wheel(pin_hall_2, wheel_R);
+HC05 BT(baudrate);  //包含初始化??
 Timer T1;  //計算RPM用
 
 //***************************************************************
@@ -67,12 +67,21 @@ void setup() {
   attachInterrupt(0, ISR_0, FALLING);
   //後輪
   attachInterrupt(1, ISR_1, FALLING);
-  //計算rpm初始化
-  T1.every(60000, updateRPM);
   //初始化LCD
   LCD1602.begin(16, 2);
-  LCD1602.autoscroll();
   LCD1602.clear();
+  //LCD1602.setCursor(16, 0);  //跑馬燈功能 part A
+  LCD1602.print("LED is OK!");
+  /*                           //跑馬燈功能 part B
+  for (int positionCounter = 0; positionCounter < 16; positionCounter++) {
+    // scroll one position left:
+    LCD1602.scrollDisplayLeft();
+    // wait a bit:
+    delay(250);
+  }
+  */
+  //計算rpm初始化
+  T1.every(60000, updateRPM);
   //初始化GY-521
   GY521.initialize();
   //初始化output
@@ -88,9 +97,9 @@ void loop() {
   drivesUpdate();
   T1.update();
   if(autoMode){
-    if(H2.getSpeed() >= 25) {
+    if(Wheel.getSpeed() >= 25) {
       pwmSwitch = 0;
-    }else if(H2.getSpeed() < 25) {
+    }else if(Wheel.getSpeed() < 25) {
       pwmSwitch = 1;
     }
   }else {
@@ -105,10 +114,10 @@ void loop() {
 //中斷副程式 for 霍爾感應器
 //***************************************************************
 void ISR_0() {
-  H1.stateUpdate();
+  Gear.stateUpdate();
   rpm_times++;
 }
 
 void ISR_1() {
-  H2.stateUpdate();
+  Wheel.stateUpdate();
 }

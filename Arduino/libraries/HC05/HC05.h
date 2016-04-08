@@ -5,9 +5,9 @@
 
 class HC05 {
 public:
-	HC05(int);
-	String read();
-	void write(String);
+  HC05(int);
+  String read();
+  void write(String);
 };
 
 #endif

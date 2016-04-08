@@ -1,7 +1,7 @@
 #include "HC05.h"
 
 HC05::HC05(int baudrate) {
-	Serial.begin(baudrate);
+  Serial.begin(baudrate);
 }
 
 String HC05::read() {
@@ -10,7 +10,7 @@ String HC05::read() {
   if (Serial.available()) {
     while (Serial.available()) {
       buffer = Serial.read();
-	  input += (char)buffer;
+    input += (char)buffer;
     }
   }
   return input;

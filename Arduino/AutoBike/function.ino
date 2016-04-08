@@ -2,12 +2,12 @@
 //裝置測試
 //*********************************************************
 void testDrives() {
-  while (!Serial.available()) {
+  while(!Serial.available()) {
     LCD1602.print("BT connect failed");
     delay(1000);
     LCD1602.clear();
   }
-  while (!GY521.testConnection()) {
+  while(!GY521.testConnection()) {
     LCD1602.print("GY521 connect failed!");
     delay(1000);
     LCD1602.clear();
@@ -21,7 +21,7 @@ void testDrives() {
 //*********************************************************
 void drivesUpdate() {
   gySlope = getAngleY();
-  hallAcceleration = H2.getAcc();
+  hallAcceleration = Wheel.getAcc();
   pedalPower = getPedalPower();
 }
 
@@ -55,7 +55,7 @@ double getAngleY() {
 //計算腳踏力量
 //*********************************************************
 double getPedalPower() {
-  double alpha = H1.getAcc();
+  double alpha = Gear.getAcc();
   double I = gear_R*gear_R*gear_m/2/10000;
   return I*alpha;
 }
@@ -138,13 +138,13 @@ void PWMOutput() {
     }else if(pedalPower < pedalPower_MIN) {
       analogWrite(pin_pwm_output, 0);
     }
-      /*
+    /*
     if(pedalPower < 50) {
       analogWrite(pin_pwm_output, 165);
     }else if(pedalPower < 30) {
       analogWrite(pin_pwm_output, 195);
     }else if(pedalPower < 15) {
-        analogWrite(pin_pwm_output, 225);
+      analogWrite(pin_pwm_output, 225);
     }else if(pedalPower == 0) {
       analogWrite(pin_pwm_output, 255);
     }
