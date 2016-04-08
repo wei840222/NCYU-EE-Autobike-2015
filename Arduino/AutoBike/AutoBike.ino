@@ -26,12 +26,13 @@
 //***************************************************************
 //常數 and 全域變數
 //***************************************************************
-//請註解一下單位
 const int baudrate = 9600;
 const double gear_R = 10;
 const double wheel_R = 29;
 double gySlope = 0;
-double gyAcceleration = 0;
+double hallAcceleration = 0;
+double hallSpeed = 0;
+String mode = "null";
 
 //***************************************************************
 //建立裝置物件
@@ -58,7 +59,7 @@ void setup() {
   GY521.initialize();
 
   //連線檢查
-  testDrives();
+  //testDrives();
 }
 
 //***************************************************************
