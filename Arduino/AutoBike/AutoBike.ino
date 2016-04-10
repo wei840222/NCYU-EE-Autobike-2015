@@ -62,6 +62,8 @@ Timer T1;  //計算RPM用
 //初始化設定
 //***************************************************************
 void setup() {
+  //設定baudrate
+  Serial.begin(baudrate);
   //霍爾感測器中斷初始化
   //踏板
   attachInterrupt(0, ISR_0, FALLING);
@@ -87,6 +89,7 @@ void setup() {
 //***************************************************************
 void loop() {
   drivesUpdate();
+
   T1.update();
   if(autoMode){
     if(Wheel.getSpeed() >= 25) {
@@ -100,6 +103,7 @@ void loop() {
   if(pwmSwitch) PWMOutput();
   showLCD();
   syncBT();
+  delay(250);
 }
 
 //***************************************************************

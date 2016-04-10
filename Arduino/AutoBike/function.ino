@@ -2,7 +2,6 @@
 //裝置測試
 //*********************************************************
 void testDrives() {
-  Serial.begin(9600);
   while(!Serial.available()) {
     LCD1602.print("BT connect failed");
     delay(1000);
@@ -30,18 +29,16 @@ void showLCD() {
   LCD1602.clear();
   LCD1602.print("Slope: ");
   LCD1602.print((int)gySlope);
-  delay(200);
 }
 
 void syncBT() {
-  //if(BT.read()=="$A\n") autoMode = !autoMode;
+  if(BT.read()=="$A\n") autoMode = !autoMode;
   LCD1602.setCursor(0, 1);
   LCD1602.print(BT.read());
-  delay(200);
   String output;
-  //output += (String)rpm;
-  //output += ":";
-  output += (String)gySlope;
+  output += (String)rpm;
+  output += ":";
+  output +=(String)gySlope;
   BT.write(output);
 }
 //*********************************************************
