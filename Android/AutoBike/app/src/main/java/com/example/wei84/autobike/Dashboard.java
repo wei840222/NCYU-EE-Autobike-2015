@@ -25,13 +25,13 @@ import java.util.UUID;
 
 public class Dashboard extends AppCompatActivity {
     //Widgets
-    EditText editMsg;
-    String address = null;
     BluetoothAdapter bluetoothAdapter = null;
     BluetoothSocket bluetoothSocket = null;
     //SPP UUID
-    static  final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     //Values
+    private String address = null;
+    private String mode = "auto";
     private int speed = 0, slope = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,15 +41,14 @@ public class Dashboard extends AppCompatActivity {
         Intent newint = getIntent();
         address = newint.getStringExtra(DeviceList.EXTRA_ADDRESS);
 
-        editMsg = (EditText) findViewById(R.id.editText);
-
         //Call the class to connect
         new ConnectBT().execute();
+
+        handler.postDelayed(runnable, 10);
+
         //ShapeSurfaceView drawing
         Graphics shapeView = new Graphics(this);
         setContentView(shapeView);
-
-        handler.postDelayed(runnable, 10);
     }
 
     private void msg(String s) {
