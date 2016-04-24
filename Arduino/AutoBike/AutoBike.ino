@@ -1,5 +1,5 @@
 //***************************************************************
-//載入函式庫
+// 載入函式庫
 //***************************************************************
 #include <LiquidCrystal.h>
 #include "MPU6050.h"
@@ -8,27 +8,27 @@
 #include "Timer.h"
 
 //***************************************************************
-//定義腳位
+// 定義腳位
 //***************************************************************
 #define pin_bluetooth_RXD 0
 #define pin_bluetooth_TXD 1
 #define pin_hall_1 2
 #define pin_hall_2 3
 #define pin_lcd_RS 9
-//LCD R/W 要接地
+// LCD R/W 要接地
 #define pin_lcd_E 8
 #define pin_lcd_D4 7
 #define pin_lcd_D5 6
 #define pin_lcd_D6 5
 #define pin_lcd_D7 4
 #define pin_pwm_output 10
+#define pin_stop_anytime 12
 #define pin_sda A4
 #define pin_scl A5
 
 //**********************************************************
-//常數
+// 常數
 //**********************************************************
-
 const int baudrate = 9600;  //  bps
 const int gear_magnetN = 3;
 const double gear_R = 10;   //  cm
@@ -38,9 +38,8 @@ const double pedalPower_MAX = 50;
 const double pedalPower_MIN = 5;
 
 //**********************************************************
-//全域變數
+// 全域變數
 //**********************************************************
-
 boolean autoMode = 1;
 boolean pwmSwitch = 1;
 int rpm_times = 0;
@@ -50,7 +49,7 @@ double hallAcceleration = 0;  //  N/s^2
 double pedalPower = 0;
 
 //***************************************************************
-//建立裝置物件
+// 建立裝置物件
 //***************************************************************
 LiquidCrystal LCD1602(pin_lcd_RS, pin_lcd_E, pin_lcd_D4, pin_lcd_D5, pin_lcd_D6, pin_lcd_D7);
 MPU6050 GY521;
@@ -59,7 +58,7 @@ HC05 BT(baudrate);  //包含初始化
 Timer T1;  //計算RPM用
 
 //***************************************************************
-//初始化設定
+// 初始化設定
 //***************************************************************
 void setup() {
   //設定baudrate
@@ -85,12 +84,20 @@ void setup() {
 }
 
 //***************************************************************
-//主迴圈
+// 主迴圈
 //***************************************************************
 void loop() {
+  // 調整 GY-521; 獲得踩踏力量
   drivesUpdate();
-
+  // 獲得rpm
   T1.update();
+  // 剎車功能
+  if(pin_stop_anytime) {
+    autoMode = 0;
+  }else {
+    autoMode = 1;
+  }
+  // 助力模式 or 非助力模式
   if(autoMode){
     if(Wheel.getSpeed() >= 25) {
       pwmSwitch = 0;
@@ -100,14 +107,18 @@ void loop() {
   }else {
     pwmSwitch = 0;
   }
+  // PWM輸出
   if(pwmSwitch) PWMOutput();
+  // 顯示螢幕
   showLCD();
+  // 與手機APP同步
   syncBT();
+  // 延遲
   delay(250);
 }
 
 //***************************************************************
-//中斷副程式 for 霍爾感應器
+// 中斷副程式 for 霍爾感應器
 //***************************************************************
 void ISR_0() {
   Gear.stateUpdate();
