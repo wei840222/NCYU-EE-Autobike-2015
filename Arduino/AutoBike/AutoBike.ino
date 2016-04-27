@@ -34,7 +34,7 @@ const int baudrate = 9600;   //  bps
 // for hall 1: gear
 const int gear_magnetN = 3;
 const double gear_R = 0.1;   // m
-const double gear_m = 2;     // kg
+const double gear_m = 3;     // kg
 const double I = gear_R*gear_R*gear_m/2;
 const double pedalPower_MAX = 50;
 const double pedalPower_MIN = 5;
@@ -49,10 +49,12 @@ boolean autoMode = 1;
 boolean pwmSwitch = 1;
 int rpm_ttimes = 0;
 int rpm = 0;
-double gySlope = 0;         //  degree
-double hallAcceleration = 0;  //  N/s^2
-double pedalPower = 0;
-
+int pre_rpm = 0;
+double gySlope = 0;           //  degree
+double speed = 0;
+double acceleration = 0;  //  m/s^2
+double pedalPower = 0;        //  N
+double pre_pedalPower = 0;
 //***************************************************************
 // 建立裝置物件
 //***************************************************************
@@ -75,19 +77,17 @@ void setup() {
   attachInterrupt(1, ISR_1, FALLING);
   //初始化LCD
   LCD1602.begin(16, 2);
-  LCD1602.print("LED is OK!");
-  delay(1000);
-  LCD1602.clear();
-  //計算rpm初始化
+  //計算rpm之初始化
   T1.every(60000, updateRPM);
   //初始化GY-521
-  GY521.initialize();
+  GY521.initialize(); 
   //初始化output
   pinMode(pin_pwm_output, OUTPUT);
-  //
+  //初始化剎車按鈕
   pinMode(pin_stop_anytime, INPUT);
-  //連線檢查
-  testDrives();
+  //裝置測試
+  testLCD();
+  testGY521();  
 }
 
 //***************************************************************
@@ -121,7 +121,6 @@ void loop() {
   // 顯示螢幕
   showLCD();
   // 與手機APP同步
-  // syncBT();
 }
 
 //***************************************************************
