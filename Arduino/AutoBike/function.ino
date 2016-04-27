@@ -57,14 +57,17 @@ void showLCD() {
 }
 
 void syncBT() {
+  String input;
   String output;
   // recive
-  if(Serial.available()) {
+  if(Serial.available() > 0) {
+    input = BT.read();
     // 判斷指令
-    if(BT.read()=="$A\n") autoMode = !autoMode;
+    if(input=="$A") autoMode = !autoMode;
     // 顯示
     LCD1602.clear();
-    LCD1602.print(BT.read());
+    LCD1602.print(input);
+    delay(2000);
   }
   // send
   output += (String)autoMode     + ";";
@@ -74,7 +77,7 @@ void syncBT() {
   output += (String)bikeSpeed    + ";";
   output += (String)acceleration + ";";
   output += (String)pedalPower   + ";";
-  output += "\n";
+  output += '\n';
   BT.write(output);
   //
   delay(333);
