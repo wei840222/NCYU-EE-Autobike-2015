@@ -2,45 +2,69 @@
 // 裝置測試
 //*********************************************************
 void testDrives() {
+  /*
   while(!Serial.available()) {
     LCD1602.print("BT connect failed");
     delay(1000);
     LCD1602.clear();
   }
+  */
   while(!GY521.testConnection()) {
     LCD1602.print("GY521 connect failed!");
     delay(1000);
     LCD1602.clear();
   }
+  /*
   LCD1602.print("All drives are ready!");
   delay(1500);
   LCD1602.clear();
+  */
 }
 
 //*********************************************************
 // 更新函式
 //*********************************************************
 void drivesUpdate() {
-  gySlope = getAngleY();
+  // update 單車的加速度
   hallAcceleration = Wheel.getAcc();
+  // update 單車的角度
+  gySlope = getAngleY();
+  // update 腳踏力道
   pedalPower = getPedalPower();
 }
 
 void showLCD() {
+  // line 0
   LCD1602.clear();
-  LCD1602.print("Slope: ");
+  LCD1602.print("Ac: ");
+  LCD1602.print((float)hallAcceleration, 10);
+  
+  // line 1
+  LCD1602.setCursor(0, 1);
+  LCD1602.print("V: ");
+  LCD1602.print((float)Wheel.getSpeed(), 4);
+  LCD1602.print("  S: ");
   LCD1602.print((int)gySlope);
+  
+  // end
+  delay(250);
 }
 
 void syncBT() {
+  //
   if(BT.read()=="$A\n") autoMode = !autoMode;
+  //
+  LCD1602.clear();
   LCD1602.setCursor(0, 1);
   LCD1602.print(BT.read());
+  //
   String output;
   output += (String)rpm;
   output += ":";
   output +=(String)gySlope;
   BT.write(output);
+  //
+  delay(250);
 }
 
 //*********************************************************
@@ -60,7 +84,6 @@ double getAngleY() {
 //*********************************************************
 double getPedalPower() {
   double alpha = Gear.getAcc();
-  double I = gear_R*gear_R*gear_m/2/10000;
   return I*alpha;
 }
 
@@ -68,22 +91,19 @@ double getPedalPower() {
 // rpm
 //*********************************************************
 void updateRPM(){
-  rpm = rpm_times/gear_magnetN;
-  rpm_times = 0;
+  rpm = rpm_ttimes/gear_magnetN;
+  rpm_ttimes = 0;
 }
 
 //*********************************************************
 // PWM 輸出
 //*********************************************************
-void PWMInitialze() {
-  pinMode(pin_pwm_output, OUTPUT);
-}
 void PWMOutput() {
   if(abs(gySlope) <= 5){
-    if(pedalPower <= pedalPower_MAX) {
-      analogWrite(pin_pwm_output, (int)pedalPower/50*128-1);
-    }else if(pedalPower > pedalPower_MAX) {
-      analogWrite(pin_pwm_output, 128);
+    if(pedalPower < pedalPower_MAX && pedalPower >= pedalPower_MIN) {
+      analogWrite(pin_pwm_output, (int)(pedalPower/pedalPower_MAX*128)-1);
+    }else if(pedalPower >= pedalPower_MAX) {
+      analogWrite(pin_pwm_output, 0);
     }else if(pedalPower < pedalPower_MIN) {
       analogWrite(pin_pwm_output, 0);
     }
@@ -100,9 +120,9 @@ void PWMOutput() {
     */
   }else if(abs(gySlope) <= 15) {
     if(pedalPower <= pedalPower_MAX) {
-      analogWrite(pin_pwm_output, (int)pedalPower/50*192-1);
+      analogWrite(pin_pwm_output, (int)(pedalPower/pedalPower_MAX*192)-1);
     }else if(pedalPower > pedalPower_MAX) {
-      analogWrite(pin_pwm_output, 192);
+      analogWrite(pin_pwm_output, 0);
     }else if(pedalPower < pedalPower_MIN) {
       analogWrite(pin_pwm_output, 0);
     }
@@ -119,9 +139,9 @@ void PWMOutput() {
     */
   }else if(abs(gySlope) <= 30) {
     if(pedalPower <= pedalPower_MAX) {
-      analogWrite(pin_pwm_output, (int)pedalPower/50*224-1);
+      analogWrite(pin_pwm_output, (int)(pedalPower/pedalPower_MAX*224)-1);
     }else if(pedalPower > pedalPower_MAX) {
-      analogWrite(pin_pwm_output, 224);
+      analogWrite(pin_pwm_output, 0);
     }else if(pedalPower < pedalPower_MIN) {
       analogWrite(pin_pwm_output, 0);
     }
@@ -138,9 +158,9 @@ void PWMOutput() {
     */
   }else if(abs(gySlope) > 30) {
     if(pedalPower <= pedalPower_MAX) {
-      analogWrite(pin_pwm_output, (int)pedalPower/50*255-1);
+      analogWrite(pin_pwm_output, (int)(pedalPower/pedalPower_MAX*255)-1);
     }else if(pedalPower > pedalPower_MAX) {
-      analogWrite(pin_pwm_output, 255);
+      analogWrite(pin_pwm_output, 0);
     }else if(pedalPower < pedalPower_MIN) {
       analogWrite(pin_pwm_output, 0);
     }

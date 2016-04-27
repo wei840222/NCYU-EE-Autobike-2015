@@ -29,20 +29,25 @@
 //**********************************************************
 // 常數
 //**********************************************************
-const int baudrate = 9600;  //  bps
+// for bluetooth
+const int baudrate = 9600;   //  bps
+// for hall 1: gear
 const int gear_magnetN = 3;
-const double gear_R = 10;   //  cm
-const double gear_m = 2;   //  kg
-const double wheel_R = 29;  //  cm
+const double gear_R = 0.1;   // m
+const double gear_m = 2;     // kg
+const double I = gear_R*gear_R*gear_m/2;
 const double pedalPower_MAX = 50;
 const double pedalPower_MIN = 5;
+// for hall 2: wheel
+const int wheel_magnetN = 3;
+const double wheel_R = 0.29; // m
 
 //**********************************************************
 // 全域變數
 //**********************************************************
 boolean autoMode = 1;
 boolean pwmSwitch = 1;
-int rpm_times = 0;
+int rpm_ttimes = 0;
 int rpm = 0;
 double gySlope = 0;         //  degree
 double hallAcceleration = 0;  //  N/s^2
@@ -54,14 +59,14 @@ double pedalPower = 0;
 LiquidCrystal LCD1602(pin_lcd_RS, pin_lcd_E, pin_lcd_D4, pin_lcd_D5, pin_lcd_D6, pin_lcd_D7);
 MPU6050 GY521;
 Hall Gear(pin_hall_1, gear_R), Wheel(pin_hall_2, wheel_R);
-HC05 BT(baudrate);  //包含初始化
+HC05 BT(baudrate);  //包含初始化BT
 Timer T1;  //計算RPM用
 
 //***************************************************************
 // 初始化設定
 //***************************************************************
 void setup() {
-  //設定baudrate
+  //設定baudrate(arduino)
   Serial.begin(baudrate);
   //霍爾感測器中斷初始化
   //踏板
@@ -78,9 +83,11 @@ void setup() {
   //初始化GY-521
   GY521.initialize();
   //初始化output
-  PWMInitialze();
+  pinMode(pin_pwm_output, OUTPUT);
+  //
+  pinMode(pin_stop_anytime, INPUT);
   //連線檢查
-  //testDrives();
+  testDrives();
 }
 
 //***************************************************************
@@ -92,11 +99,13 @@ void loop() {
   // 獲得rpm
   T1.update();
   // 剎車功能
+  /*
   if(pin_stop_anytime) {
     autoMode = 0;
   }else {
     autoMode = 1;
   }
+  */
   // 助力模式 or 非助力模式
   if(autoMode){
     if(Wheel.getSpeed() >= 25) {
@@ -112,9 +121,7 @@ void loop() {
   // 顯示螢幕
   showLCD();
   // 與手機APP同步
-  syncBT();
-  // 延遲
-  delay(250);
+  // syncBT();
 }
 
 //***************************************************************
@@ -122,7 +129,7 @@ void loop() {
 //***************************************************************
 void ISR_0() {
   Gear.stateUpdate();
-  rpm_times++;
+  rpm_ttimes++;
 }
 
 void ISR_1() {
