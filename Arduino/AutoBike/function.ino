@@ -30,7 +30,7 @@ void testGY521() {
 //*********************************************************
 void drivesUpdate() {
   // update 單車的速度
-  speed = Wheel.getSpeed();
+  bikeSpeed = Wheel.getSpeed();
   // update 單車的加速度
   acceleration = Wheel.getAcc();
   // update 單車的角度
@@ -48,7 +48,7 @@ void showLCD() {
   // line 1
   LCD1602.setCursor(0, 1);
   LCD1602.print("V: ");
-  LCD1602.print(speed, 4);
+  LCD1602.print(bikeSpeed, 4);
   LCD1602.print("  S: ");
   LCD1602.print((int)gySlope);
   
@@ -71,7 +71,7 @@ void syncBT() {
   output += (String)pwmSwitch    + ";";
   output += (String)rpm          + ";";
   output += (String)gySlope      + ";";
-  output += (String)speed        + ";";
+  output += (String)bikeSpeed    + ";";
   output += (String)acceleration + ";";
   output += (String)pedalPower   + ";";
   output += "\n";

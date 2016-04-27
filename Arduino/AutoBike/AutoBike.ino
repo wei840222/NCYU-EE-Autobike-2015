@@ -51,7 +51,7 @@ int rpm_ttimes = 0;
 int rpm = 0;
 int pre_rpm = 0;
 double gySlope = 0;           //  degree
-double speed = 0;
+double bikeSpeed = 0;
 double acceleration = 0;  //  m/s^2
 double pedalPower = 0;        //  N
 double pre_pedalPower = 0;
@@ -100,13 +100,13 @@ void loop() {
   // 獲得rpm
   T1.update();
   // 剎車功能
-  /*
-  if(pin_stop_anytime) {
-    autoMode = 0;
-  }else {
-    autoMode = 1;
-  }
-  */
+
+  //  if(pin_stop_anytime) {
+  //    autoMode = 0;
+  //  }else {
+  //    autoMode = 1;
+  //  }
+
   // 助力模式 or 非助力模式
   if(autoMode){
     if(Wheel.getSpeed() >= 25) {
