@@ -33,15 +33,15 @@ const int baudrate = 9600;   //  bps
 // for hall 1: gear
 const int gear_magnetN = 6;
 const double gear_magnetR = 0.025;   // m
-const double gear_R = 0.1;   // m
-const double gear_m = 3;     // kg
+const double gear_R = 0.105; // m
+const double gear_m = 2;     // kg
 const double I = gear_R*gear_R*gear_m/2;
-const double pedalPower_MAX = 10;
-const double pedalPower_MIN = 1;
+const double pedalPower_MAX = 1;
+const double pedalPower_MIN = 0.1;
 // for hall 2: wheel
 const int wheel_magnetN = 6;
-const double wheel_magnetR = 0.1; // m
-const double wheel_R = 0.3; // m
+const double wheel_magnetR = 0.085; // m
+const double wheel_R = 0.275; // m
 
 //***************************************
 // 全域變數
