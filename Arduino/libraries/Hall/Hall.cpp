@@ -23,7 +23,7 @@ void Hall::set(int pin, double r, int magnetN, double magnetR) {
   _r = r; 
   _magnetN = magnetN;
   _magnetR = magnetR;
-	_pTheta = 2 * PI/_magnetN;
+	_pTheta = 2*PI/_magnetN;
   _preTime = 0;       //前一個時間點
   _nowTime = 0;       //現在的時間點
   _preOmega = 0;
