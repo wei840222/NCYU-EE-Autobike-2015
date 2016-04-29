@@ -17,15 +17,15 @@ public:
     double getAlpha();
     volatile double _preTime;       //前一個時間點
     volatile double _nowTime;       //現在的時間點
-    volatile double _preSpeed;
-    volatile double _nowSpeed;
-    volatile double _nowAcc;  
+    volatile double _preOmega;
+    volatile double _nowOmega;
+    volatile double _nowAlpha;  
 private:
     int _pin;
     int _magnetN;
     double _r;
     double _magnetR;
-    double _pml; 	
+    double _pTheta; 	
 };
 
 #endif

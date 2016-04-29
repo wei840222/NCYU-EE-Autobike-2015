@@ -96,15 +96,15 @@ void loop() {
   //
   if((millis()-Gear._nowTime)>5000) {
     Gear._preTime = 0;       //前一個時間點 
-    Gear._preSpeed = 0;
-    Gear._nowSpeed = 0;
-    Gear._nowAcc = 0;   
+    Gear._preOmega = 0;
+    Gear._nowOmega = 0;
+    Gear._nowAlpha = 0;   
   }
   if((millis()-Wheel._nowTime)>5000) {
     Wheel._preTime = 0;       //前一個時間點 
-    Wheel._preSpeed = 0;
-    Wheel._nowSpeed = 0;
-    Wheel._nowAcc = 0;   
+    Wheel._preOmega = 0;
+    Wheel._nowOmega = 0;
+    Wheel._nowAlpha = 0;   
   }
   // 剎車功能
 

@@ -10,12 +10,12 @@ Hall::Hall(int pin, double r, int magnetN, double magnetR) {
 	_r = r;
   _magnetN = magnetN;
   _magnetR = magnetR;
-	_pml = 2 * PI*_magnetR/_magnetN;
+	_pTheta = 2 * PI/_magnetN;
 	_preTime = 0;       //前一個時間點
 	_nowTime = 0;       //現在的時間點
-	_preSpeed = 0;
-	_nowSpeed = 0;
-	_nowAcc = 0;
+	_preOmega = 0;
+	_nowOmega = 0;
+	_nowAlpha = 0;
 	pinMode(_pin, INPUT_PULLUP);
 }
 void Hall::set(int pin, double r, int magnetN, double magnetR) {
@@ -23,32 +23,32 @@ void Hall::set(int pin, double r, int magnetN, double magnetR) {
   _r = r; 
   _magnetN = magnetN;
   _magnetR = magnetR;
-	_pml = 2 * PI*_magnetR/_magnetN;
+	_pTheta = 2 * PI/_magnetN;
   _preTime = 0;       //前一個時間點
   _nowTime = 0;       //現在的時間點
-  _preSpeed = 0;
-  _nowSpeed = 0;
-  _nowAcc = 0;    
+  _preOmega = 0;
+  _nowOmega = 0;
+  _nowAlpha = 0;    
   pinMode(_pin, INPUT_PULLUP);
 }
 void Hall::stateUpdate(){
   _nowTime = millis();
   if(_preTime==0) {
     _preTime = _nowTime;
-  }else if(_preSpeed==0){
-    _nowSpeed = _pml/(_nowTime-_preTime);   
+  }else if(_preOmega==0){
+    _nowOmega = _pTheta/(_nowTime-_preTime);   
     _preTime = _nowTime;
-    _preSpeed = _nowSpeed;
+    _preOmega = _nowOmega;
   }else {
-    _nowSpeed = _pml/(_nowTime-_preTime);
-    _nowAcc = (_nowSpeed-_preSpeed)/(_nowTime-_preTime);  
+    _nowOmega = _pTheta/(_nowTime-_preTime);
+    _nowAlpha = (_nowOmega-_preOmega)/(_nowTime-_preTime);  
     _preTime = _nowTime;
-    _preSpeed = _nowSpeed;
+    _preOmega = _nowOmega;
   }
 }
 double Hall::getOmega() {
-  return _nowSpeed*1000/_magnetR; // (rad/s)
+  return _nowOmega*1000; // (rad/s)
 }
 double Hall::getAlpha() {
-  return _nowAcc*1000*1000/_magnetR;  //" *10.0 "得(rad/s^2) 
+  return _nowAlpha*1000*1000;  //(rad/s^2) 
 }
