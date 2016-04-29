@@ -5,11 +5,12 @@
 //**************************************
 #include "Hall.h"
 
-Hall::Hall(int pin, double r, int magnetN) {
+Hall::Hall(int pin, double r, int magnetN, double magnetR) {
 	_pin = pin;
 	_r = r;
   _magnetN = magnetN;
-	_pml = 2 * PI*_r/_magnetN;
+  _magnetR = magnetR;
+	_pml = 2 * PI*_magnetR/_magnetN;
 	_preTime = 0;       //前一個時間點
 	_nowTime = 0;       //現在的時間點
 	_preSpeed = 0;
@@ -17,11 +18,12 @@ Hall::Hall(int pin, double r, int magnetN) {
 	_nowAcc = 0;
 	pinMode(_pin, INPUT_PULLUP);
 }
-void Hall::set(int pin, double r, int magnetN) {
+void Hall::set(int pin, double r, int magnetN, double magnetR) {
   _pin = pin; 
   _r = r; 
   _magnetN = magnetN;
-	_pml = 2 * PI*_r/_magnetN;
+  _magnetR = magnetR;
+	_pml = 2 * PI*_magnetR/_magnetN;
   _preTime = 0;       //前一個時間點
   _nowTime = 0;       //現在的時間點
   _preSpeed = 0;
@@ -44,9 +46,9 @@ void Hall::stateUpdate(){
     _preSpeed = _nowSpeed;
   }
 }
-double Hall::getSpeed() {
-  return _nowSpeed*36.0;  //" *36.0 " 得(km/hr)
+double Hall::getOmega() {
+  return (_nowSpeed/1000)/_magnetR; // (rad/s)
 }
-double Hall::getAcc() {
-  return _nowAcc*10.0;  //" *10.0 "得(m/s^2) 
+double Hall::getAlpha() {
+  return _nowAcc;  //" *10.0 "得(rad/s^2) 
 }

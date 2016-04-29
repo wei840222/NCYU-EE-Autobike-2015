@@ -32,14 +32,16 @@
 const int baudrate = 9600;   //  bps
 // for hall 1: gear
 const int gear_magnetN = 6;
-const double gear_R = 0.025;   // m
+const double gear_magnetR = 0.025;   // m
+const double gear_R = 0.1;   // m
 const double gear_m = 3;     // kg
 const double I = gear_R*gear_R*gear_m/2;
 const double pedalPower_MAX = 10;
 const double pedalPower_MIN = 1;
 // for hall 2: wheel
 const int wheel_magnetN = 6;
-const double wheel_R = 0.1; // m
+const double wheel_magnetR = 0.1; // m
+const double wheel_R = 0.3; // m
 
 //***************************************
 // 全域變數
@@ -58,8 +60,8 @@ double pre_pedalPower = 0;
 //********************************************
 LiquidCrystal LCD1602(pin_lcd_RS, pin_lcd_E, pin_lcd_D4, pin_lcd_D5, pin_lcd_D6, pin_lcd_D7);
 MPU6050 GY521;
-Hall Gear(pin_hall_1, gear_R, gear_magnetN);
-Hall Wheel(pin_hall_2, wheel_R, wheel_magnetN);
+Hall Gear(pin_hall_1, gear_R, gear_magnetN, gear_magnetR);
+Hall Wheel(pin_hall_2, wheel_R, wheel_magnetN, wheel_magnetR);
 HC05 BT(baudrate);  //包含初始化BT
 
 //********************************************
@@ -114,9 +116,9 @@ void loop() {
 
   // 助力模式 or 非助力模式
   if(autoMode){
-    if(Wheel.getSpeed() >= 25) {
+    if(bikeSpeed >= 25) {
       pwmSwitch = 0;
-    }else if(Wheel.getSpeed() < 25) {
+    }else if(bikeSpeed < 25) {
       pwmSwitch = 1;
     }
   }else {

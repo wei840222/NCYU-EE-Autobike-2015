@@ -10,11 +10,11 @@
 
 class Hall {
 public:
-	Hall(int, double, int);
-    void set(int, double, int);
+	Hall(int, double, int, double);
+    void set(int, double, int, double);
     void stateUpdate();
-    double getSpeed();
-    double getAcc();
+    double getOmega();
+    double getAlpha();
     volatile double _preTime;       //前一個時間點
     volatile double _nowTime;       //現在的時間點
     volatile double _preSpeed;
@@ -24,6 +24,7 @@ private:
     int _pin;
     int _magnetN;
     double _r;
+    double _magnetR;
     double _pml; 	
 };
 
