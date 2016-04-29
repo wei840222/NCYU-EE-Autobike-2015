@@ -1,6 +1,6 @@
 //**************************************
 //*霍爾感測器
-//*2016-03-10
+//*2016-04-29
 //*吳昱成
 //**************************************
 #ifndef Hall_h
@@ -15,16 +15,16 @@ public:
     void stateUpdate();
     double getSpeed();
     double getAcc();
+    volatile double _preTime;       //前一個時間點
+    volatile double _nowTime;       //現在的時間點
+    volatile double _preSpeed;
+    volatile double _nowSpeed;
+    volatile double _nowAcc;  
 private:
     int _pin;
     int _magnetN;
     double _r;
-    double _pml;
-    volatile double _preTime;       //前一個時間點
-   	volatile double _nowTime;       //現在的時間點
-    volatile double _preSpeed;
-    volatile double _nowSpeed;
-    volatile double _nowAcc;    
+    double _pml; 	
 };
 
 #endif

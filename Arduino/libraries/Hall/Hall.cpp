@@ -1,6 +1,6 @@
 //**************************************
 //*霍爾感測器
-//*2016-03-10
+//*2016-04-29
 //*吳昱成
 //**************************************
 #include "Hall.h"
@@ -42,7 +42,7 @@ void Hall::stateUpdate(){
     _nowAcc = (_nowSpeed-_preSpeed)/(_nowTime-_preTime);  
     _preTime = _nowTime;
     _preSpeed = _nowSpeed;
-   }
+  }
 }
 double Hall::getSpeed() {
   return _nowSpeed*36.0;  //" *36.0 " 得(km/hr)
