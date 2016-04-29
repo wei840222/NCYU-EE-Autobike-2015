@@ -45,15 +45,15 @@ void drivesUpdate() {
 void showLCD() {
   // line 0
   LCD1602.clear();
-  LCD1602.print("P: ");
-  LCD1602.print(pedalPower, 8);
+  LCD1602.print("");
+  LCD1602.print(abs(pedalPower), 12);
   
   // line 1
   LCD1602.setCursor(0, 1);
   LCD1602.print("V: ");
-  LCD1602.print(bikeSpeed, 6);
-  LCD1602.print(" S: ");
-  LCD1602.print((int)gySlope);
+  LCD1602.print(bikeSpeed);
+  LCD1602.print("  ");
+  LCD1602.print(rps*60);
   
   // end
   delay(1000);
