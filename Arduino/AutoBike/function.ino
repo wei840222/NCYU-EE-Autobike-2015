@@ -75,12 +75,8 @@ void syncBT() {
   // send
   if(1/*input=="$INFOR"*/){
     output += (String)autoMode     + ";";
-    output += (String)pwmSwitch    + ";";
-    output += (String)rps          + ";";
     output += (String)gySlope      + ";";
     output += (String)bikeSpeed    + ";";
-    output += (String)acceleration + ";";
-    output += (String)pedalPower   + ";";
     output += '\n';
     BT.write(output);
     Serial.print(output);
