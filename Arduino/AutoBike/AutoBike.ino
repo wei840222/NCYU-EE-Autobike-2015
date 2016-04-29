@@ -31,14 +31,14 @@
 // for bluetooth
 const int baudrate = 9600;   //  bps
 // for hall 1: gear
-//const int gear_magnetN = 3;
+const int gear_magnetN = 3;
 const double gear_R = 0.1;   // m
 const double gear_m = 3;     // kg
 const double I = gear_R*gear_R*gear_m/2;
 const double pedalPower_MAX = 50;
 const double pedalPower_MIN = 5;
 // for hall 2: wheel
-// const int wheel_magnetN = 3;
+const int wheel_magnetN = 3;
 const double wheel_R = 0.29; // m
 
 //***************************************
@@ -58,7 +58,8 @@ double pre_pedalPower = 0;
 //********************************************
 LiquidCrystal LCD1602(pin_lcd_RS, pin_lcd_E, pin_lcd_D4, pin_lcd_D5, pin_lcd_D6, pin_lcd_D7);
 MPU6050 GY521;
-Hall Gear(pin_hall_1, gear_R), Wheel(pin_hall_2, wheel_R);
+Hall Gear(pin_hall_1, gear_R, gear_magnetN);
+Hall Wheel(pin_hall_2, wheel_R, wheel_magnetN);
 HC05 BT(baudrate);  //包含初始化BT
 
 //********************************************
