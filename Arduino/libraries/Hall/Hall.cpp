@@ -47,8 +47,8 @@ void Hall::stateUpdate(){
   }
 }
 double Hall::getOmega() {
-  return (_nowSpeed*1000)/_magnetR; // (rad/s)
+  return _nowSpeed*1000/_magnetR; // (rad/s)
 }
 double Hall::getAlpha() {
-  return _nowAcc;  //" *10.0 "得(rad/s^2) 
+  return _nowAcc*1000*1000/_magnetR;  //" *10.0 "得(rad/s^2) 
 }

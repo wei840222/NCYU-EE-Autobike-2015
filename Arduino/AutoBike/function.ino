@@ -102,7 +102,7 @@ double getAngleY() {
 //*********************************************************
 double getPedalPower() {
   double alpha = Gear.getAlpha();
-  return I*alpha*gear_R;
+  return I*alpha*2*PI*gear_R;
 }
 
 //*********************************************************
