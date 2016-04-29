@@ -117,12 +117,19 @@ void updateRPM(){
 //*********************************************************
 void PWMOutput() {
   if(abs(gySlope) <= 5){
-    if(pedalPower < pedalPower_MAX && pedalPower >= pedalPower_MIN) {
-      analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*256-1);
-    }else if(pedalPower >= pedalPower_MAX) {
-      analogWrite(pin_pwm_output, 0);
-    }else if(pedalPower < pedalPower_MIN) {
-      analogWrite(pin_pwm_output, 0);
+    // if(pedalPower < pedalPower_MAX && pedalPower >= pedalPower_MIN) {
+    //   analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*256-1);
+    // }else if(pedalPower >= pedalPower_MAX) {
+    //   analogWrite(pin_pwm_output, 0);
+    // }else if(pedalPower < pedalPower_MIN) {
+    //   analogWrite(pin_pwm_output, 0);
+    // }
+    if(bikeSpeed>0 && bikeSpeed<15) {
+      analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*255);
+    }else if(bikeSpeed>15 && bikeSpeed<24) {
+      analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255);
+    }else {
+      
     }
     //  if(pedalPower < 50) {
     //    analogWrite(pin_pwm_output, 75);
