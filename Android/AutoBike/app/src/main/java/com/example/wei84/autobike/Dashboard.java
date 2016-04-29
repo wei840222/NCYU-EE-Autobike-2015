@@ -21,18 +21,22 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.UUID;
 
 public class Dashboard extends AppCompatActivity {
     //Widgets
-    BluetoothAdapter bluetoothAdapter = null;
-    BluetoothSocket bluetoothSocket = null;
+    BluetoothAdapter btAdapter = null;
+    BluetoothSocket btSocket = null;
+    InputStream btInStream = null;
+    OutputStream btOutStream = null;
     //SPP UUID
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     //Values
     private String address = null;
-    private String mode = "auto";
     private int speed = 0, slope = 0;
+    private final String cSpeed = "#speed", cSlope = "#slope";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +64,17 @@ public class Dashboard extends AppCompatActivity {
         byte[] BTbuffer = new byte[1];
         public void run() {
             try {
-                if (bluetoothSocket.getInputStream().available() > 0) {
-                    bluetoothSocket.getInputStream().read(BTbuffer);
+                btOutStream.write(cSlope.getBytes());
+                if (btInStream.available() > 0) {
+                    btInStream.read(BTbuffer);
                     String BTstring = new String(BTbuffer, "US-ASCII");
-                    msg(BTstring);
                     slope = Integer.parseInt(BTstring);
+                }
+                btOutStream.write(cSpeed.getBytes());
+                if (btInStream.available() > 0) {
+                    btInStream.read(BTbuffer);
+                    String BTstring = new String(BTbuffer, "US-ASCII");
+                    speed = Integer.parseInt(BTstring);
                 }
             } catch (IOException e) {
                 msg("錯誤");
@@ -85,12 +95,12 @@ public class Dashboard extends AppCompatActivity {
         protected Void doInBackground(Void... devices){
             //while the progress dialog is shown, the connect is done background
             try{
-                if(bluetoothSocket == null || !isBtConnected) {
-                    bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                    BluetoothDevice dispositivo = bluetoothAdapter.getRemoteDevice(address);
-                    bluetoothSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);
+                if(btSocket == null || !isBtConnected) {
+                    btAdapter = BluetoothAdapter.getDefaultAdapter();
+                    BluetoothDevice dispositivo = btAdapter.getRemoteDevice(address);
+                    btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
-                    bluetoothSocket.connect();
+                    btSocket.connect();
                 }
             }
             catch (IOException e){
@@ -107,9 +117,10 @@ public class Dashboard extends AppCompatActivity {
             }
             else{
                 try {
-                    bluetoothSocket.getOutputStream().write("Connected".getBytes());
+                    btInStream = btSocket.getInputStream();
+                    btOutStream = btSocket.getOutputStream();
                 } catch (IOException e) {
-                    msg("錯誤");
+                    msg("串流取得錯誤");
                 }
                 msg("已連線");
                 isBtConnected = true;
