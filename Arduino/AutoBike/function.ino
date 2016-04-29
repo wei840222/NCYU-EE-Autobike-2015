@@ -30,10 +30,10 @@ void testGY521() {
 //*********************************************************
 void drivesUpdate() {
   // update 單車的速度
-  bikeSpeed = Wheel.getOmega()*wheel_R;
+  bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
   // update rps
   pre_rps = rps;
-  rps = bikeSpeed/2/PI;
+  rps = Wheel.getOmega()/2/PI;
   // update 單車的加速度
   acceleration = Wheel.getAlpha()*wheel_R;
   // update 單車的角度
@@ -45,14 +45,14 @@ void drivesUpdate() {
 void showLCD() {
   // line 0
   LCD1602.clear();
-  LCD1602.print("Ac: ");
-  LCD1602.print((float)acceleration, 10);
+  LCD1602.print("P: ");
+  LCD1602.print(pedalPower, 10);
   
   // line 1
   LCD1602.setCursor(0, 1);
   LCD1602.print("V: ");
-  LCD1602.print(bikeSpeed, 4);
-  LCD1602.print("  S: ");
+  LCD1602.print(bikeSpeed, 6);
+  LCD1602.print(" S: ");
   LCD1602.print((int)gySlope);
   
   // end
@@ -102,7 +102,7 @@ double getAngleY() {
 //*********************************************************
 double getPedalPower() {
   double alpha = Gear.getAlpha();
-  return I*alpha*rps*18;
+  return I*alpha*gear_R;
 }
 
 //*********************************************************
