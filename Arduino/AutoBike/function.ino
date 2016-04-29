@@ -45,8 +45,8 @@ void drivesUpdate() {
 void showLCD() {
   // line 0
   LCD1602.clear();
-  LCD1602.print("Ac: ");
-  LCD1602.print((float)acceleration, 10);
+  LCD1602.print("P: ");
+  LCD1602.print(pedalPower, 8);
   
   // line 1
   LCD1602.setCursor(0, 1);
