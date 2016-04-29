@@ -31,15 +31,15 @@
 // for bluetooth
 const int baudrate = 9600;   //  bps
 // for hall 1: gear
-const int gear_magnetN = 3;
-const double gear_R = 0.1;   // m
+const int gear_magnetN = 6;
+const double gear_R = 0.025;   // m
 const double gear_m = 3;     // kg
 const double I = gear_R*gear_R*gear_m/2;
-const double pedalPower_MAX = 50;
-const double pedalPower_MIN = 5;
+const double pedalPower_MAX = 10;
+const double pedalPower_MIN = 1;
 // for hall 2: wheel
-const int wheel_magnetN = 3;
-const double wheel_R = 0.29; // m
+const int wheel_magnetN = 6;
+const double wheel_R = 0.1; // m
 
 //***************************************
 // 全域變數
@@ -82,7 +82,7 @@ void setup() {
   //初始化剎車按鈕
   pinMode(pin_stop_anytime, INPUT);
   //裝置測試
-  testGY521();  
+  //testGY521();  
 }
 
 //********************************************
