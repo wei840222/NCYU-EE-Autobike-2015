@@ -31,6 +31,9 @@ void testGY521() {
 void drivesUpdate() {
   // update 單車的速度
   bikeSpeed = Wheel.getSpeed();
+  // update rps
+  pre_rps = rps;
+  rps = bikeSpeed/3.6/PI/wheel_R/wheel_R;
   // update 單車的加速度
   acceleration = Wheel.getAcc();
   // update 單車的角度
@@ -70,16 +73,18 @@ void syncBT() {
     delay(2000);
   }
   // send
-  output += (String)autoMode     + ";";
-  output += (String)pwmSwitch    + ";";
-  output += (String)rpm          + ";";
-  output += (String)gySlope      + ";";
-  output += (String)bikeSpeed    + ";";
-  output += (String)acceleration + ";";
-  output += (String)pedalPower   + ";";
-  output += '\n';
-  BT.write(output);
-  Serial.print(output);
+  if(1/*input=="$INFOR"*/){
+    output += (String)autoMode     + ";";
+    output += (String)pwmSwitch    + ";";
+    output += (String)rps          + ";";
+    output += (String)gySlope      + ";";
+    output += (String)bikeSpeed    + ";";
+    output += (String)acceleration + ";";
+    output += (String)pedalPower   + ";";
+    output += '\n';
+    BT.write(output);
+    Serial.print(output);
+  }
   //
   delay(100);
 } 
@@ -102,15 +107,6 @@ double getAngleY() {
 double getPedalPower() {
   double alpha = Gear.getAcc();
   return I*alpha;
-}
-
-//*********************************************************
-// rpm
-//*********************************************************
-void updateRPM(){
-  pre_rpm = rpm;
-  rpm = rpm_ttimes/gear_magnetN;
-  rpm_ttimes = 0;
 }
 
 //*********************************************************

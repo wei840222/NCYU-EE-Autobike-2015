@@ -5,7 +5,6 @@
 #include "MPU6050.h"
 #include "Hall.h"
 #include "HC05.h"
-#include "Timer.h"
 
 //********************************************
 // 定義腳位
@@ -32,14 +31,14 @@
 // for bluetooth
 const int baudrate = 9600;   //  bps
 // for hall 1: gear
-const int gear_magnetN = 3;
+//const int gear_magnetN = 3;
 const double gear_R = 0.1;   // m
 const double gear_m = 3;     // kg
 const double I = gear_R*gear_R*gear_m/2;
 const double pedalPower_MAX = 50;
 const double pedalPower_MIN = 5;
 // for hall 2: wheel
-const int wheel_magnetN = 3;
+// const int wheel_magnetN = 3;
 const double wheel_R = 0.29; // m
 
 //***************************************
@@ -47,9 +46,8 @@ const double wheel_R = 0.29; // m
 //***************************************
 boolean autoMode = 1;
 boolean pwmSwitch = 1;
-int rpm_ttimes = 0;
-int rpm = 0;
-int pre_rpm = 0;
+double rps = 0;
+double pre_rps = 0;
 double gySlope = 0;           //  degree
 double bikeSpeed = 0;
 double acceleration = 0;  //  m/s^2
@@ -62,7 +60,6 @@ LiquidCrystal LCD1602(pin_lcd_RS, pin_lcd_E, pin_lcd_D4, pin_lcd_D5, pin_lcd_D6,
 MPU6050 GY521;
 Hall Gear(pin_hall_1, gear_R), Wheel(pin_hall_2, wheel_R);
 HC05 BT(baudrate);  //包含初始化BT
-Timer T1;  //計算RPM用
 
 //********************************************
 // 初始化設定
@@ -77,8 +74,6 @@ void setup() {
   attachInterrupt(1, ISR_1, FALLING);
   //初始化LCD
   LCD1602.begin(16, 2);
-  //計算rpm之初始化
-  T1.every(60000, updateRPM);
   //初始化GY-521
   GY521.initialize(); 
   //初始化output
@@ -95,8 +90,6 @@ void setup() {
 void loop() {
   // 調整 GY-521; 獲得踩踏力量
   drivesUpdate();
-  // 獲得rpm
-  T1.update();
   // 剎車功能
 
   //  if(!pin_stop_anytime) {
@@ -128,7 +121,6 @@ void loop() {
 //***************************************
 void ISR_0() {
   Gear.stateUpdate();
-  rpm_ttimes++;
 }
 
 void ISR_1() {
