@@ -33,7 +33,7 @@ void drivesUpdate() {
   bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
   // update rps
   pre_rps = rps;
-  rps = Wheel.getOmega()/2/PI;
+  rps = Gear.getOmega()/2/PI;
   // update 單車的加速度
   acceleration = Wheel.getAlpha()*wheel_R;
   // update 單車的角度
