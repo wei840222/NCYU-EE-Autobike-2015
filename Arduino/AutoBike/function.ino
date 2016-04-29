@@ -53,7 +53,7 @@ void showLCD() {
   LCD1602.print((int)gySlope);
   
   // end
-  delay(333);
+  delay(1000);
 }
 
 void syncBT() {
@@ -79,9 +79,10 @@ void syncBT() {
   output += (String)pedalPower   + ";";
   output += '\n';
   BT.write(output);
+  Serial.print(output);
   //
-  delay(333);
-}
+  delay(100);
+} 
 
 //*********************************************************
 // 計算Y軸角度值
