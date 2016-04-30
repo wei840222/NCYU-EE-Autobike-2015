@@ -46,7 +46,7 @@ void showLCD() {
   // line 0
   LCD1602.clear();
   LCD1602.print("");
-  LCD1602.print(pedalPower, 12);
+  LCD1602.print(pedalPower, 8);
   
   // line 1
   LCD1602.setCursor(0, 1);
@@ -82,7 +82,7 @@ void syncBT() {
     // Serial.print(output);
     // Serial.println(bikeSpeed);
     // Serial.println(gySlope);
-    Serial.println(pedalPower*100, 8);
+    Serial.println(pedalPower, 8);
   }
   //
   delay(100);
@@ -104,8 +104,12 @@ double getAngleY() {
 // 計算腳踏力量
 //*********************************************************
 double getPedalPower() {
-  double alpha = Gear.getAlpha();
-  return I*alpha*2*PI*gear_R/rps;
+  if(abs(I*Gear.getAlpha()*2*PI*gear_R/gear_magnetN/rps)>0){
+    return I*Gear.getAlpha()*2*PI*gear_R/gear_magnetN/rps;
+  }else {
+    return 0;
+  }
+  
 }
 
 //*********************************************************
