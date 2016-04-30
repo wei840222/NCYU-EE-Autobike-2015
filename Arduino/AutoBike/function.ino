@@ -79,7 +79,8 @@ void syncBT() {
     output += (String)bikeSpeed    + ";";
     output += '\n';
     BT.write(output);
-    Serial.print(output);
+    // Serial.print(output);
+    Serial.println(bikeSpeed);
   }
   //
   delay(100);
@@ -102,7 +103,7 @@ double getAngleY() {
 //*********************************************************
 double getPedalPower() {
   double alpha = Gear.getAlpha();
-  return I*alpha*2*PI*gear_R/gear_magnetN;
+  return I*alpha*2*PI*gear_R/rps;
 }
 
 //*********************************************************
