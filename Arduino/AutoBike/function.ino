@@ -105,7 +105,7 @@ double getAngleY() {
 //*********************************************************
 double getPedalPower() {
   if(abs(I*Gear.getAlpha()*2*PI*gear_R/gear_magnetN/rps)>0){
-    return I*Gear.getAlpha()*2*PI*gear_R/gear_magnetN/rps;
+    return I*Gear.getAlpha()*(crank_l*2*PI/gear_magnetN);// (N-m)
   }else {
     return 0;
   }

@@ -35,7 +35,9 @@ const int gear_magnetN = 6;
 const double gear_magnetR = 0.025;   // m
 const double gear_R = 0.105; // m
 const double gear_m = 2;     // kg
-const double I = gear_R*gear_R*gear_m/2;
+const double crank_m = 0.3;       // kg
+const double crank_l = 0.175;     // m
+const double I = gear_R*gear_R*gear_m/2+2*crank_m*crank_l*crank_l/3;
 const double pedalPower_MAX = 1;
 const double pedalPower_MIN = 0.1;
 // for hall 2: wheel
