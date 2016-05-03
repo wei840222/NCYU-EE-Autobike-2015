@@ -47,14 +47,14 @@ void showLCD() {
   LCD1602.clear();
   LCD1602.print("");
   LCD1602.print(pedalPower, 8);
-  
+
   // line 1
   LCD1602.setCursor(0, 1);
   LCD1602.print("V: ");
   LCD1602.print(bikeSpeed);
   LCD1602.print("  ");
   LCD1602.print(rps*60);
-  
+
   // end
   delay(1000);
 }
@@ -86,7 +86,7 @@ void syncBT() {
   }
   //
   delay(100);
-} 
+}
 
 //*********************************************************
 // 計算Y軸角度值
@@ -105,11 +105,11 @@ double getAngleY() {
 //*********************************************************
 double getPedalPower() {
   if(abs(I*Gear.getAlpha()*2*PI*gear_R/gear_magnetN/rps)>0){
-    return I*Gear.getAlpha()*(crank_l*2*PI/gear_magnetN);// (N-m)
+    return I*Gear.getAlpha()*(crank_l*2*PI/gear_magnetN)*100;// (N-m)
   }else {
     return 0;
   }
-  
+
 }
 
 //*********************************************************
@@ -129,7 +129,7 @@ void PWMOutput() {
     }else if(bikeSpeed>15 && bikeSpeed<24) {
       analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255);
     }else {
-      
+
     }
     //  if(pedalPower < 50) {
     //    analogWrite(pin_pwm_output, 75);
@@ -148,7 +148,7 @@ void PWMOutput() {
     }else if(pedalPower < pedalPower_MIN) {
       analogWrite(pin_pwm_output, 0);
     }
-    
+
     //  if(pedalPower < 50) {
     //    analogWrite(pin_pwm_output, 105);
     //  }else if(pedalPower < 30) {
@@ -158,7 +158,7 @@ void PWMOutput() {
     //  }else if(pedalPower == 0) {
     //    analogWrite(pin_pwm_output, 195);
     //  }
-    
+
   }else if(abs(gySlope) <= 30) {
     if(pedalPower <= pedalPower_MAX) {
       analogWrite(pin_pwm_output, (int)(pedalPower/pedalPower_MAX*224)-1);
@@ -167,7 +167,7 @@ void PWMOutput() {
     }else if(pedalPower < pedalPower_MIN) {
       analogWrite(pin_pwm_output, 0);
     }
-    
+
     //  if(pedalPower < 50) {
     //    analogWrite(pin_pwm_output, 135);
     //  }else if(pedalPower < 30) {
@@ -177,7 +177,7 @@ void PWMOutput() {
     //  }else if(pedalPower == 0) {
     //    analogWrite(pin_pwm_output, 225);
     //  }
-    
+
   }else if(abs(gySlope) > 30) {
     if(pedalPower <= pedalPower_MAX) {
       analogWrite(pin_pwm_output, (int)(pedalPower/pedalPower_MAX*255)-1);
@@ -186,7 +186,7 @@ void PWMOutput() {
     }else if(pedalPower < pedalPower_MIN) {
       analogWrite(pin_pwm_output, 0);
     }
-    
+
     //  if(pedalPower < 50) {
     //    analogWrite(pin_pwm_output, 165);
     //  }else if(pedalPower < 30) {
@@ -196,6 +196,6 @@ void PWMOutput() {
     //  }else if(pedalPower == 0) {
     //    analogWrite(pin_pwm_output, 255);
     //  }
-    
+
   }*/
 }

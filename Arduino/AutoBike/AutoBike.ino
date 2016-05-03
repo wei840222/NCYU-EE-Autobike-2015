@@ -37,7 +37,8 @@ const double gear_R = 0.105; // m
 const double gear_m = 2;     // kg
 const double crank_m = 0.3;       // kg
 const double crank_l = 0.175;     // m
-const double I = gear_R*gear_R*gear_m/2+2*crank_m*crank_l*crank_l/3;
+// const double I = gear_R*gear_R*gear_m/2+2*crank_m*crank_l*crank_l/3;
+const double I = gear_R*gear_R*gear_m/2;
 const double pedalPower_MAX = 1;
 const double pedalPower_MIN = 0.1;
 // for hall 2: wheel
@@ -80,33 +81,33 @@ void setup() {
   //初始化LCD
   LCD1602.begin(16, 2);
   //初始化GY-521
-  GY521.initialize(); 
+  GY521.initialize();
   //初始化output
   pinMode(pin_pwm_output, OUTPUT);
   //初始化剎車按鈕
   pinMode(pin_stop_anytime, INPUT);
   //裝置測試
-  //testGY521();  
+  //testGY521();
 }
 
 //********************************************
 // 主迴圈
 //********************************************
 void loop() {
-  // 
+  //
   drivesUpdate();
   //
   if((millis()-Gear._nowTime)>5000) {
-    Gear._preTime = 0;       //前一個時間點 
+    Gear._preTime = 0;       //前一個時間點
     Gear._preOmega = 0;
     Gear._nowOmega = 0;
-    Gear._nowAlpha = 0;   
+    Gear._nowAlpha = 0;
   }
   if((millis()-Wheel._nowTime)>5000) {
-    Wheel._preTime = 0;       //前一個時間點 
+    Wheel._preTime = 0;       //前一個時間點
     Wheel._preOmega = 0;
     Wheel._nowOmega = 0;
-    Wheel._nowAlpha = 0;   
+    Wheel._nowAlpha = 0;
   }
   // 剎車功能
 
