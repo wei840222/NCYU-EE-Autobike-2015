@@ -104,6 +104,14 @@ double getAngleY() {
 //*********************************************************
 // 計算腳踏力量
 //*********************************************************
+double getPedalTorque() {
+  if(abs(I*Gear.getAlpha()*gear_R)>0){
+    return I*Gear.getAlpha()*gear_R;// (N-m)*(rad/s) = (W)
+  }else {
+    return 0;
+  }
+}
+
 double getPedalPower() {
   if(abs(I*Gear.getAlpha()*gear_R)>0){
     return (I*Gear.getAlpha()*gear_R)*Gear.getOmega();// (N-m)*(rad/s) = (W)
