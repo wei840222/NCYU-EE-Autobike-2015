@@ -54,14 +54,20 @@ const double pedalPower_MIN = 0.1;
 //***************************************
 boolean autoMode = 1;
 boolean pwmSwitch = 1;
+
 double rps = 0;
-double rpm = 0;
 double pre_rps = 0;
+double rpm = 0;
+
 double gySlope = 0;           //  degree
 double bikeSpeed = 0;
 double acceleration = 0;  //  m/s^2
-double pedalPower = 0;        //  N
+
+double pedalTorque= 0;        //  N
+double pre_pedalTorque = 0;
+double pedalPower = 0;        //  N-m
 double pre_pedalPower = 0;
+
 //********************************************
 // 建立裝置物件
 //********************************************
