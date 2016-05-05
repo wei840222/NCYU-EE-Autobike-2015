@@ -29,17 +29,21 @@ void testGY521() {
 // 更新函式
 //*********************************************************
 void drivesUpdate() {
-  // update 單車的速度
+  // update 單車的角度
+  gySlope = getAngleY();
+  
+  // update 單車的速度 & rps & rpm
   bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
-  // update rps
   pre_rps = rps;
   rps = Gear.getOmega()/2/PI;
   rpm = rps * 60;
+  
   // update 單車的加速度
   acceleration = Wheel.getAlpha()*wheel_R;
-  // update 單車的角度
-  gySlope = getAngleY();
-  // update 腳踏力道
+  
+  // update 腳踏力道 & 腳踏功率
+  pre_pedalTorque = pedalTorque
+  pedalTorque = getPedalTorque();
   pedalPower = getPedalPower();
 }
 
