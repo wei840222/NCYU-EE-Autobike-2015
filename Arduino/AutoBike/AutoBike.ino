@@ -30,21 +30,24 @@
 //***************************************
 // for bluetooth
 const int baudrate = 9600;   //  bps
+
 // for hall 1: gear
 const int gear_magnetN = 6;
-const double gear_magnetR = 0.025;   // m
 const double gear_R = 0.105; // m
 const double gear_m = 2;     // kg
-const double crank_m = 0.3;       // kg
-const double crank_l = 0.175;     // m
-// const double I = gear_R*gear_R*gear_m/2+2*crank_m*crank_l*crank_l/3;
+//const double I = gear_R*gear_R*gear_m/2+2*crank_m*crank_l*crank_l/3;
 const double I = gear_R*gear_R*gear_m/2;
-const double pedalPower_MAX = 1;
-const double pedalPower_MIN = 0.1;
+
 // for hall 2: wheel
 const int wheel_magnetN = 6;
-const double wheel_magnetR = 0.085; // m
 const double wheel_R = 0.275; // m
+
+// 曲柄
+const double crank_m = 0.3;       // kg
+const double crank_l = 0.175;     // m
+// 功率上下限
+const double pedalPower_MAX = 1;
+const double pedalPower_MIN = 0.1;
 
 //***************************************
 // 全域變數
@@ -52,6 +55,7 @@ const double wheel_R = 0.275; // m
 boolean autoMode = 1;
 boolean pwmSwitch = 1;
 double rps = 0;
+double rpm = 0;
 double pre_rps = 0;
 double gySlope = 0;           //  degree
 double bikeSpeed = 0;
@@ -63,8 +67,8 @@ double pre_pedalPower = 0;
 //********************************************
 LiquidCrystal LCD1602(pin_lcd_RS, pin_lcd_E, pin_lcd_D4, pin_lcd_D5, pin_lcd_D6, pin_lcd_D7);
 MPU6050 GY521;
-Hall Gear(pin_hall_1, gear_R, gear_magnetN, gear_magnetR);
-Hall Wheel(pin_hall_2, wheel_R, wheel_magnetN, wheel_magnetR);
+Hall Gear(pin_hall_1, gear_magnetN);
+Hall Wheel(pin_hall_2, wheel_magnetN);
 HC05 BT(baudrate);  //包含初始化BT
 
 //********************************************

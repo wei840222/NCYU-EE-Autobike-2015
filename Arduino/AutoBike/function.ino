@@ -34,6 +34,7 @@ void drivesUpdate() {
   // update rps
   pre_rps = rps;
   rps = Gear.getOmega()/2/PI;
+  rpm = rps * 60;
   // update 單車的加速度
   acceleration = Wheel.getAlpha()*wheel_R;
   // update 單車的角度
@@ -53,7 +54,7 @@ void showLCD() {
   LCD1602.print("V: ");
   LCD1602.print(bikeSpeed);
   LCD1602.print("  ");
-  LCD1602.print(rps*60);
+  LCD1602.print(rpm);
 
   // end
   delay(1000);
@@ -104,12 +105,11 @@ double getAngleY() {
 // 計算腳踏力量
 //*********************************************************
 double getPedalPower() {
-  if(abs(I*Gear.getAlpha()*2*PI*gear_R/gear_magnetN/rps)>0){
-    return I*Gear.getAlpha()*(crank_l*2*PI/gear_magnetN)*100;// (N-m)
+  if(abs(I*Gear.getAlpha()*gear_R)>0){
+    return (I*Gear.getAlpha()*gear_R)*Gear.getOmega();// (N-m)*(rad/s) = (W)
   }else {
     return 0;
   }
-
 }
 
 //*********************************************************
@@ -117,85 +117,10 @@ double getPedalPower() {
 //*********************************************************
 void PWMOutput() {
   if(abs(gySlope) <= 5){
-    // if(pedalPower < pedalPower_MAX && pedalPower >= pedalPower_MIN) {
-    //   analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*256-1);
-    // }else if(pedalPower >= pedalPower_MAX) {
-    //   analogWrite(pin_pwm_output, 0);
-    // }else if(pedalPower < pedalPower_MIN) {
-    //   analogWrite(pin_pwm_output, 0);
-    // }
     if(bikeSpeed>0 && bikeSpeed<15) {
       analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*255);
     }else if(bikeSpeed>15 && bikeSpeed<24) {
       analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255);
-    }else {
-
     }
-    //  if(pedalPower < 50) {
-    //    analogWrite(pin_pwm_output, 75);
-    //  }else if(pedalPower < 30) {
-    //  analogWrite(pin_pwm_output, 105);
-    //  }else if(pedalPower < 15) {
-    //    analogWrite(pin_pwm_output, 135);
-    //  }else if(pedalPower == 0) {
-    //    analogWrite(pin_pwm_output, 165);
-    //  }
-  }/*else if(abs(gySlope) <= 15) {
-    if(pedalPower <= pedalPower_MAX) {
-      analogWrite(pin_pwm_output, (int)(pedalPower/pedalPower_MAX*192)-1);
-    }else if(pedalPower > pedalPower_MAX) {
-      analogWrite(pin_pwm_output, 0);
-    }else if(pedalPower < pedalPower_MIN) {
-      analogWrite(pin_pwm_output, 0);
-    }
-
-    //  if(pedalPower < 50) {
-    //    analogWrite(pin_pwm_output, 105);
-    //  }else if(pedalPower < 30) {
-    //    analogWrite(pin_pwm_output, 135);
-    //  }else if(pedalPower < 15) {
-    //    analogWrite(pin_pwm_output, 165);
-    //  }else if(pedalPower == 0) {
-    //    analogWrite(pin_pwm_output, 195);
-    //  }
-
-  }else if(abs(gySlope) <= 30) {
-    if(pedalPower <= pedalPower_MAX) {
-      analogWrite(pin_pwm_output, (int)(pedalPower/pedalPower_MAX*224)-1);
-    }else if(pedalPower > pedalPower_MAX) {
-      analogWrite(pin_pwm_output, 0);
-    }else if(pedalPower < pedalPower_MIN) {
-      analogWrite(pin_pwm_output, 0);
-    }
-
-    //  if(pedalPower < 50) {
-    //    analogWrite(pin_pwm_output, 135);
-    //  }else if(pedalPower < 30) {
-    //    analogWrite(pin_pwm_output, 165);
-    //  }else if(pedalPower < 15) {
-    //    analogWrite(pin_pwm_output, 195);
-    //  }else if(pedalPower == 0) {
-    //    analogWrite(pin_pwm_output, 225);
-    //  }
-
-  }else if(abs(gySlope) > 30) {
-    if(pedalPower <= pedalPower_MAX) {
-      analogWrite(pin_pwm_output, (int)(pedalPower/pedalPower_MAX*255)-1);
-    }else if(pedalPower > pedalPower_MAX) {
-      analogWrite(pin_pwm_output, 0);
-    }else if(pedalPower < pedalPower_MIN) {
-      analogWrite(pin_pwm_output, 0);
-    }
-
-    //  if(pedalPower < 50) {
-    //    analogWrite(pin_pwm_output, 165);
-    //  }else if(pedalPower < 30) {
-    //    analogWrite(pin_pwm_output, 195);
-    //  }else if(pedalPower < 15) {
-    //    analogWrite(pin_pwm_output, 225);
-    //  }else if(pedalPower == 0) {
-    //    analogWrite(pin_pwm_output, 255);
-    //  }
-
-  }*/
+  }
 }
