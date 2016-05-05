@@ -34,6 +34,7 @@ void drivesUpdate() {
   // update rps
   pre_rps = rps;
   rps = Gear.getOmega()/2/PI;
+  rpm = rps * 60;
   // update 單車的加速度
   acceleration = Wheel.getAlpha()*wheel_R;
   // update 單車的角度
@@ -53,7 +54,7 @@ void showLCD() {
   LCD1602.print("V: ");
   LCD1602.print(bikeSpeed);
   LCD1602.print("  ");
-  LCD1602.print(rps*60);
+  LCD1602.print(rpm);
 
   // end
   delay(1000);
@@ -104,12 +105,11 @@ double getAngleY() {
 // 計算腳踏力量
 //*********************************************************
 double getPedalPower() {
-  if(abs(I*Gear.getAlpha()*2*PI*gear_R/gear_magnetN/rps)>0){
-    return I*Gear.getAlpha()*(crank_l*2*PI/gear_magnetN)*100;// (N-m)
+  if(abs(I*Gear.getAlpha()*gear_R)>0){
+    return (I*Gear.getAlpha()*gear_R)*Gear.getOmega();// (N-m)*(rad/s) = (W)
   }else {
     return 0;
   }
-
 }
 
 //*********************************************************
