@@ -1,6 +1,6 @@
 //**************************************
 //*霍爾感測器
-//*2016-04-29
+//*2016-05-05
 //*吳昱成
 //**************************************
 #ifndef Hall_h
@@ -10,8 +10,8 @@
 
 class Hall {
 public:
-	Hall(int, double, int, double);
-    void set(int, double, int, double);
+	Hall(int, int);
+    void set(int, int);
     void stateUpdate();
     double getOmega();
     double getAlpha();
@@ -23,8 +23,6 @@ public:
 private:
     int _pin;
     int _magnetN;
-    double _r;
-    double _magnetR;
     double _pTheta; 	
 };
 
