@@ -42,7 +42,7 @@ void drivesUpdate() {
   acceleration = Wheel.getAlpha()*wheel_R;
   
   // update 腳踏力道 & 腳踏功率
-  pre_pedalTorque = pedalTorque
+  pre_pedalTorque = pedalTorque;
   pedalTorque = getPedalTorque();
   pedalPower = getPedalPower();
 }
@@ -110,7 +110,7 @@ double getAngleY() {
 //*********************************************************
 double getPedalTorque() {
   if(abs(I*Gear.getAlpha()*gear_R)>0){
-    return I*Gear.getAlpha()*gear_R;// (N-m)*(rad/s) = (W)
+    return I*Gear.getAlpha()*gear_R; // (N-m)
   }else {
     return 0;
   }
