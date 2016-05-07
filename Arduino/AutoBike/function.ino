@@ -118,7 +118,7 @@ double getPedalTorque() {
 
 double getPedalPower() {
   if(abs(I*Gear.getAlpha())>0){
-    return I*Gear.getAlpha()*Gear.getOmega();// (N-m)*(rad/s) = (W)
+    return I*Gear.getAlpha()*Gear.getOmega();// (N-m)/s) = (W)
   }else {
     return 0;
   }
