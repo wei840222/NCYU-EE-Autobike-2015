@@ -31,16 +31,16 @@ void testGY521() {
 void drivesUpdate() {
   // update 單車的角度
   gySlope = getAngleY();
-  
+
   // update 單車的速度 & rps & rpm
   bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
   pre_rps = rps;
   rps = Gear.getOmega()/2/PI;
   rpm = rps * 60;
-  
+
   // update 單車的加速度
   acceleration = Wheel.getAlpha()*wheel_R;
-  
+
   // update 腳踏力道 & 腳踏功率
   pre_pedalTorque = pedalTorque;
   pedalTorque = getPedalTorque();
@@ -109,16 +109,16 @@ double getAngleY() {
 // 計算腳踏力量
 //*********************************************************
 double getPedalTorque() {
-  if(abs(I*Gear.getAlpha()*gear_R)>0){
-    return I*Gear.getAlpha()*gear_R; // (N-m)
+  if(abs(I*Gear.getAlpha())>0){
+    return I*Gear.getAlpha(); // (N-m)
   }else {
     return 0;
   }
 }
 
 double getPedalPower() {
-  if(abs(I*Gear.getAlpha()*gear_R)>0){
-    return (I*Gear.getAlpha()*gear_R)*Gear.getOmega();// (N-m)*(rad/s) = (W)
+  if(abs(I*Gear.getAlpha())>0){
+    return I*Gear.getAlpha()*Gear.getOmega();// (N-m)*(rad/s) = (W)
   }else {
     return 0;
   }
