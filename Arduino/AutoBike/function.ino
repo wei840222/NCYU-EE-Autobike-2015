@@ -51,7 +51,7 @@ void showLCD() {
   // line 0
   LCD1602.clear();
   LCD1602.print("");
-  LCD1602.print(pedalPower, 8);
+  LCD1602.print(pedalTorque, 8);
 
   // line 1
   LCD1602.setCursor(0, 1);
@@ -87,7 +87,7 @@ void syncBT() {
     // Serial.print(output);
     // Serial.println(bikeSpeed);
     // Serial.println(gySlope);
-    Serial.println(pedalPower, 8);
+    Serial.println(pedalTorque, 8);
   }
   //
   delay(100);
