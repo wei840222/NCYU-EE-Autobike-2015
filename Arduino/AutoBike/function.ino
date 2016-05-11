@@ -51,7 +51,7 @@ void showLCD() {
   // line 0
   LCD1602.clear();
   LCD1602.print("");
-  LCD1602.print(pedalTorque, 8);
+  LCD1602.print(abs((int)(pedalPower/pedalPower_MAX*255>255?255:pedalPower/pedalPower_MAX*255)));
 
   // line 1
   LCD1602.setCursor(0, 1);
@@ -87,7 +87,6 @@ void syncBT() {
     // Serial.print(output);
     // Serial.println(bikeSpeed);
     // Serial.println(gySlope);
-    Serial.println(pedalTorque, 8);
   }
   //
   delay(100);
@@ -128,11 +127,14 @@ double getPedalPower() {
 // PWM 輸出
 //*********************************************************
 void PWMOutput() {
-  if(abs(gySlope) <= 5){
-    if(bikeSpeed>0 && bikeSpeed<15) {
-      analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*255);
-    }else if(bikeSpeed>15 && bikeSpeed<24) {
-      analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255);
+  if(abs(gySlope) <= 50){
+    if(bikeSpeed>0 && bikeSpeed<150) {
+      PWM = abs((int)(pedalPower/pedalPower_MAX*255>255?255:pedalPower/pedalPower_MAX*255));
+      Serial.println(PWM);
+      analogWrite(pin_pwm_output, PWM);
+      delay(500);
+    }else if(bikeSpeed>150 && bikeSpeed<240) {
+      analogWrite(pin_pwm_output, (int)pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255);
     }
   }
 }

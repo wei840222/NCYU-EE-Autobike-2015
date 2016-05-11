@@ -46,8 +46,8 @@ const double wheel_R = 0.275; // m
 const double crank_m = 0.3;       // kg
 const double crank_l = 0.175;     // m
 // 功率上下限
-const double pedalPower_MAX = 1;
-const double pedalPower_MIN = 0.1;
+const double pedalPower_MAX = 10;
+const double pedalPower_MIN = 0;
 
 //***************************************
 // 全域變數
@@ -68,6 +68,7 @@ double pre_pedalTorque = 0;
 double pedalPower = 0;        //  N-m
 double pre_pedalPower = 0;
 
+int PWM;
 //********************************************
 // 建立裝置物件
 //********************************************
