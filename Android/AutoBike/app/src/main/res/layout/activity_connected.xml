@@ -7,25 +7,28 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.wei84.autobike.DeviceList">
+    tools:context="com.example.wei84.autobike.Connected">
 
-    <TextView
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="配對裝置"
-        android:id="@+id/textView" />
-
-    <ListView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/listView"
-        android:layout_below="@+id/textView"
-        android:layout_above="@+id/button" />
+        android:id="@+id/editText"
+        android:layout_alignParentTop="true" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="更新清單"
+        android:text="中斷連線"
         android:id="@+id/button"
-        android:layout_alignParentBottom="true" />
+        android:layout_below="@+id/editText" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="坡度:"
+        android:id="@+id/textView"
+        android:layout_marginTop="27dp"
+        android:layout_below="@+id/button" />
+
 </RelativeLayout>

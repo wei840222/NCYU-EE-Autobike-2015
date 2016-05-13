@@ -97,6 +97,14 @@ void syncBT() {
 // 計算Y軸角度值
 //*********************************************************
 //單位SI制
+double getAngleX() {
+  int16_t ax, ay, az;
+  double Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
+  double Vay_offset = acceleration * cos(gySlope) * 16384 / 9.8;
+  GY521.getAcceleration(&ax, &ay, &az);
+  return 60 * atan((ax - Vax_offset) / sqrt(pow(ay - Vay_offset, 2) + pow(az, 2)));
+}
+
 double getAngleY() {
   int16_t ax, ay, az;
   double Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
@@ -105,6 +113,13 @@ double getAngleY() {
   return 60 * atan((ay - Vay_offset) / sqrt(pow(ax - Vax_offset, 2) + pow(az, 2)));
 }
 
+double getAngleZ() {
+  int16_t ax, ay, az;
+  double Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
+  double Vay_offset = acceleration * cos(gySlope) * 16384 / 9.8;
+  GY521.getAcceleration(&ax, &ay, &az);
+  return 60 * atan((az) / sqrt(pow(ax - Vax_offset, 2) + pow(ay - Vay_offset, 2)));
+}
 //*********************************************************
 // 計算腳踏力量
 //*********************************************************
