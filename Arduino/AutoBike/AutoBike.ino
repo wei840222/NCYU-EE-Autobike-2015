@@ -52,8 +52,8 @@ const double pedalPower_MIN = 0.1;
 //***************************************
 // 全域變數
 //***************************************
-boolean autoMode = 1;
-boolean pwmSwitch = 1;
+boolean autoMode = true;
+boolean pwmSwitch = true;
 
 double rps = 0;
 double pre_rps = 0;

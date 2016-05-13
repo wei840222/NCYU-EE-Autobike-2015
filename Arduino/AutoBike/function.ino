@@ -71,25 +71,20 @@ void syncBT() {
   if(Serial.available() > 0) {
     input = BT.read();
     // 判斷指令
-    if(input=="$A") autoMode = !autoMode;
+    if(input=="auto")
+      autoMode = true;
+    if(input=="off")
+      autoMode = false;
     // 顯示
     LCD1602.clear();
     LCD1602.print(input);
     delay(2000);
   }
   // send
-  if(1/*input=="$INFOR"*/){
-    output += (String)autoMode     + ";";
-    output += (String)gySlope      + ";";
-    output += (String)bikeSpeed    + ";";
-    output += '\n';
-    BT.write(output);
-    // Serial.print(output);
-    // Serial.println(bikeSpeed);
-    // Serial.println(gySlope);
-    Serial.println(pedalPower, 8);
-  }
-  //
+  output += (String)gySlope + ":";
+  output += (String)bikeSpeed;
+  BT.write(output);
+  output = "";
   delay(100);
 }
 
@@ -124,30 +119,27 @@ double getAngleZ() {
 // 計算腳踏力量
 //*********************************************************
 double getPedalTorque() {
-  if(abs(I*Gear.getAlpha())>0){
-    return I*Gear.getAlpha(); // (N-m)
-  }else {
+  if(abs(I*Gear.getAlpha())>0)
+    return I*Gear.getAlpha(); 
+    // (N-m)
+  else
     return 0;
-  }
 }
 
 double getPedalPower() {
-  if(abs(I*Gear.getAlpha())>0){
-    return I*Gear.getAlpha()*Gear.getOmega();// (N-m)/s) = (W)
-  }else {
+  if(abs(I*Gear.getAlpha())>0)
+    return I*Gear.getAlpha()*Gear.getOmega();// (N-m)/s) = (W);
+  else
     return 0;
-  }
 }
 
 //*********************************************************
 // PWM 輸出
 //*********************************************************
 void PWMOutput() {
-  if(abs(gySlope) <= 5){
-    if(bikeSpeed>0 && bikeSpeed<15) {
+  if(abs(gySlope) <= 5)
+    if(bikeSpeed>0 && bikeSpeed<15)
       analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*255);
-    }else if(bikeSpeed>15 && bikeSpeed<24) {
+    else if(bikeSpeed>15 && bikeSpeed<24)
       analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255);
-    }
-  }
 }

@@ -16,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.UUID;
 
 public class Connected extends AppCompatActivity {
@@ -23,13 +25,16 @@ public class Connected extends AppCompatActivity {
     //Widgets
     EditText textMsg;
     TextView textSlope;
+    TextView textSpeed;
     Button btnDissconnect;
-    String address = null;
-    BluetoothAdapter myBluetooth = null;
-    BluetoothSocket btSocket = null;
+    String address;
+    BluetoothAdapter myBluetooth;
+    BluetoothSocket btSocket;
+    OutputStream btOutStream;
+    InputStream btInStream;
 
     //SPP UUID
-    static  final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
+    static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +47,7 @@ public class Connected extends AppCompatActivity {
         btnDissconnect = (Button) findViewById(R.id.button);
         textMsg = (EditText) findViewById(R.id.editText);
         textSlope = (TextView) findViewById(R.id.textView);
+        textSpeed = (TextView) findViewById(R.id.textView2);
 
         //Call the class to connect
         new ConnectBT().execute();
@@ -70,11 +76,13 @@ public class Connected extends AppCompatActivity {
         public void run() {
             byte[] BTbuffer = new byte[32];
             try {
-                btSocket.getOutputStream().write(textMsg.getText().toString().getBytes());
-                if(btSocket.getInputStream().available() > 0) {
-                    btSocket.getInputStream().read(BTbuffer);
+               btOutStream.write(textMsg.getText().toString().getBytes());
+                if(btInStream.available() > 0) {
+                    btInStream.read(BTbuffer);
                     String BTstring = new String(BTbuffer, "US-ASCII");
-                    textSlope.setText("坡度: " + BTstring);
+                    String[] token = BTstring.split(":");
+                    textSlope.setText("坡度: " + token[0]);
+                    textSpeed.setText("速度: " + token[1] + " km/h");
                 }
             } catch (IOException e) {
                 msg("錯誤");
@@ -105,6 +113,8 @@ public class Connected extends AppCompatActivity {
                     btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
                     btSocket.connect();
+                    btOutStream = btSocket.getOutputStream();
+                    btInStream = btSocket.getInputStream();
                 }
             }
             catch (IOException e){
