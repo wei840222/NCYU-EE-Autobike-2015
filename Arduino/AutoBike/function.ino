@@ -30,7 +30,7 @@ void testGY521() {
 //*********************************************************
 void drivesUpdate() {
   // update 單車的角度
-  gySlope = getAngleY();
+  gySlope = getAngleZ();
 
   // update 單車的速度 & rps & rpm
   bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
@@ -120,7 +120,7 @@ double getAngleZ() {
 //*********************************************************
 double getPedalTorque() {
   if(abs(I*Gear.getAlpha())>0)
-    return I*Gear.getAlpha(); 
+    return I*Gear.getAlpha();
     // (N-m)
   else
     return 0;
