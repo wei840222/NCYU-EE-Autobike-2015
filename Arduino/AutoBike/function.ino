@@ -51,7 +51,7 @@ void showLCD() {
   // line 0
   LCD1602.clear();
   LCD1602.print("");
-  LCD1602.print(pedalPower, 8);
+  LCD1602.print(abs((int)(pedalPower/pedalPower_MAX*255>255?255:pedalPower/pedalPower_MAX*255)));
 
   // line 1
   LCD1602.setCursor(0, 1);
