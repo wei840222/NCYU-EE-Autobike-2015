@@ -30,8 +30,6 @@ public class Connected extends AppCompatActivity {
     String address;
     BluetoothAdapter myBluetooth;
     BluetoothSocket btSocket;
-    OutputStream btOutStream;
-    InputStream btInStream;
 
     //SPP UUID
     static final UUID myUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
@@ -76,9 +74,9 @@ public class Connected extends AppCompatActivity {
         public void run() {
             byte[] BTbuffer = new byte[32];
             try {
-               btOutStream.write(textMsg.getText().toString().getBytes());
-                if(btInStream.available() > 0) {
-                    btInStream.read(BTbuffer);
+                btSocket.getOutputStream().write(textMsg.getText().toString().getBytes());
+                if(btSocket.getInputStream().available() > 0) {
+                    btSocket.getInputStream().read(BTbuffer);
                     String BTstring = new String(BTbuffer, "US-ASCII");
                     String[] token = BTstring.split(":");
                     textSlope.setText("坡度: " + token[0]);
@@ -113,8 +111,6 @@ public class Connected extends AppCompatActivity {
                     btSocket = dispositivo.createInsecureRfcommSocketToServiceRecord(myUUID);
                     BluetoothAdapter.getDefaultAdapter().cancelDiscovery();
                     btSocket.connect();
-                    btOutStream = btSocket.getOutputStream();
-                    btInStream = btSocket.getInputStream();
                 }
             }
             catch (IOException e){
