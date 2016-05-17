@@ -30,7 +30,7 @@ void testGY521() {
 //*********************************************************
 void drivesUpdate() {
   // update 單車的角度
-  gySlope = getAngleZ();
+  gySlope = -getAngleY();
 
   // update 單車的速度 & rps & rpm
   bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
@@ -51,8 +51,14 @@ void showLCD() {
   // line 0
   LCD1602.clear();
   LCD1602.print("");
-  LCD1602.print(abs((int)(pedalPower/pedalPower_MAX*255>255?255:pedalPower/pedalPower_MAX*255)));
-
+  if(bikeSpeed>0 && bikeSpeed<15){
+      LCD1602.print((int)abs(pedalPower/pedalPower_MAX*255+ 5*abs(gySlope)));
+  }else if(bikeSpeed>15){
+      LCD1602.print((int)abs(pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255+ 5*abs(gySlope)));
+  }
+  LCD1602.print("  ");
+  LCD1602.print(gySlope);
+  
   // line 1
   LCD1602.setCursor(0, 1);
   LCD1602.print("V: ");
@@ -137,9 +143,11 @@ double getPedalPower() {
 // PWM 輸出
 //*********************************************************
 void PWMOutput() {
-  if(abs(gySlope) <= 5)
-    if(bikeSpeed>0 && bikeSpeed<15)
-      analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*255);
-    else if(bikeSpeed>15 && bikeSpeed<24)
-      analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255);
+    if(bikeSpeed>0 && bikeSpeed<15){
+      analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*255+ abs(gySlope));
+      delay(750);
+    }else if(bikeSpeed>15){
+      analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255+ abs(gySlope));
+      delay(250);
+    }
 }
