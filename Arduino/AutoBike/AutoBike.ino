@@ -146,11 +146,11 @@ void loop() {
   syncBT();
   // Serial.println(pedalPower);
   // Serial.println(pedalTorque);
-  if(bikeSpeed>0 && bikeSpeed<15){
+  /*if(bikeSpeed>0 && bikeSpeed<15){
       Serial.println((int)abs(pedalPower/pedalPower_MAX*255+ abs(gySlope)));
   }else if(bikeSpeed>15){
       Serial.println((int)abs(pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255+ abs(gySlope)));
-  }
+  }*/
 }
 
 //***************************************

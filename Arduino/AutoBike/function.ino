@@ -74,14 +74,14 @@ void syncBT() {
   String input;
   String output;
   // recive
-  if(Serial.available() > 0) {
+  /*if(Serial.available() > 0) {
     input = BT.read();
     // 判斷指令
     if(input=="auto")
       autoMode = true;
     if(input=="off")
       autoMode = false;
-  }
+  }*/
   // send
   output += (String)gySlope + ":";
   output += (String)bikeSpeed;
