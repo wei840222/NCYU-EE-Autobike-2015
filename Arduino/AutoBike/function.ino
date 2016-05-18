@@ -81,10 +81,6 @@ void syncBT() {
       autoMode = true;
     if(input=="off")
       autoMode = false;
-    // 顯示
-    LCD1602.clear();
-    LCD1602.print(input);
-    delay(2000);
   }
   // send
   output += (String)gySlope + ":";
