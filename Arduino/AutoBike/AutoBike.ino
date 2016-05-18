@@ -46,7 +46,7 @@ const double wheel_R = 0.275; // m
 const double crank_m = 0.3;       // kg
 const double crank_l = 0.175;     // m
 // 功率上下限
-const double pedalPower_MAX = 10;
+const double pedalPower_MAX = 25;
 const double pedalPower_MIN = 0;
 
 //***************************************
@@ -144,6 +144,13 @@ void loop() {
   showLCD();
   // 與手機APP同步
   syncBT();
+  // Serial.println(pedalPower);
+  // Serial.println(pedalTorque);
+  if(bikeSpeed>0 && bikeSpeed<15){
+      Serial.println((int)abs(pedalPower/pedalPower_MAX*255+ abs(gySlope)));
+  }else if(bikeSpeed>15){
+      Serial.println((int)abs(pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255+ abs(gySlope)));
+  }
 }
 
 //***************************************
