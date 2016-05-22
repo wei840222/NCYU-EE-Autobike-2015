@@ -1,6 +1,6 @@
 //**************************************
 //*霍爾感測器
-//*2016-03-10
+//*2016-05-05
 //*吳昱成
 //**************************************
 #ifndef Hall_h
@@ -10,20 +10,20 @@
 
 class Hall {
 public:
-  Hall(int, double);
-    void set(int, double);
+	Hall(int, int);
+    void set(int, int);
     void stateUpdate();
-    double getSpeed();
-    double getAcc();
-private:
-    int _pin;
-    double _r;
-    double _pml;
+    double getOmega();
+    double getAlpha();
     volatile double _preTime;       //前一個時間點
     volatile double _nowTime;       //現在的時間點
-    volatile double _preSpeed;
-    volatile double _nowSpeed;
-    volatile double _nowAcc;
+    volatile double _preOmega;
+    volatile double _nowOmega;
+    volatile double _nowAlpha;  
+private:
+    int _pin;
+    int _magnetN;
+    double _pTheta; 	
 };
 
 #endif

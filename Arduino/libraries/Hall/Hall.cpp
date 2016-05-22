@@ -1,50 +1,46 @@
 //**************************************
 //*霍爾感測器
-//*2016-03-10
+//*2016-05-05
 //*吳昱成
 //**************************************
 #include "Hall.h"
 
-Hall::Hall(int pin, double r) {
-  _pin = pin;
-  _r = r;
-  _pml = 2 * PI*_r;
+Hall::Hall(int pin, int magnetN) {
+	_pin = pin;
+  _magnetN = magnetN;
+	_pTheta = 2 * PI/_magnetN;
+	_preTime = 0;       //前一個時間點
+	_nowTime = 0;       //現在的時間點
+	_preOmega = 0;
+	_nowOmega = 0;
+	_nowAlpha = 0;
+	pinMode(_pin, INPUT_PULLUP);
+}
+void Hall::set(int pin, int magnetN) {
+  _pin = pin; 
+  _magnetN = magnetN;
+	_pTheta = 2*PI/_magnetN;
   _preTime = 0;       //前一個時間點
   _nowTime = 0;       //現在的時間點
-  _preSpeed = 0;
-  _nowSpeed = 0;
-  _nowAcc = 0;
+  _preOmega = 0;
+  _nowOmega = 0;
+  _nowAlpha = 0;    
   pinMode(_pin, INPUT_PULLUP);
 }
-void Hall::set(int pin, double r) {
-  _pin = pin;
-  _r = r;
-  _pml = 2*PI*_r;
-  _preTime = 0;       //前一個時間點
-  _nowTime = 0;       //現在的時間點
-  _preSpeed = 0;
-  _nowSpeed = 0;
-  _nowAcc = 0;
-  pinMode(_pin, INPUT_PULLUP);
-}
-void Hall::stateUpdate(){
+void Hall::stateUpdate() {
   _nowTime = millis();
-  if(_preTime==0) {
-    _preTime = _nowTime;
-  }else if(_preSpeed==0){
-    _nowSpeed = _pml/(_nowTime-_preTime);
-    _preTime = _nowTime;
-    _preSpeed = _nowSpeed;
-  }else {
-    _nowSpeed = _pml/(_nowTime-_preTime);
-    _nowAcc = (_nowSpeed-_preSpeed)/(_nowTime-_preTime);
-    _preTime = _nowTime;
-    _preSpeed = _nowSpeed;
-   }
+  if(_preTime != 0) {
+    _nowOmega = _pTheta/(_nowTime-_preTime);    
+  }
+  if(_preOmega != 0) {
+    _nowAlpha = (_nowOmega-_preOmega)/(_nowTime-_preTime);  
+  }
+  _preTime = _nowTime;  
+  _preOmega = _nowOmega;  
 }
-double Hall::getSpeed() {
-  return _nowSpeed*36.0;  //" *36.0 " 得(km/hr)
+double Hall::getOmega() {
+  return _nowOmega*1000; // (rad/s)
 }
-double Hall::getAcc() {
-  return _nowAcc*10.0;  //" *10.0 "得(m/s^2)
+double Hall::getAlpha() {
+  return _nowAlpha*1000000;  //(rad/s^2) 
 }
