@@ -48,7 +48,9 @@ const double crank_l = 0.175;     // m
 // 功率上下限
 const double pedalPower_MAX = 25;
 const double pedalPower_MIN = 0;
-
+// PWM
+double bestBikeSpeed = 17.6;
+double bestBikeSpeed_interval = 1.5;
 //***************************************
 // 全域變數
 //***************************************
@@ -59,8 +61,10 @@ double rps = 0;
 double pre_rps = 0;
 double rpm = 0;
 
-double gySlope = 0;           //  degree
-double bikeSpeed = 0;
+double gySlope = 0;
+double pre_gySlope = 0;           //  degree
+double bikeSpeed = 0;         //  degree
+double pre_bikeSpeed = 0;
 double acceleration = 0;  //  m/s^2
 
 double pedalTorque= 0;        //  N
@@ -68,7 +72,7 @@ double pre_pedalTorque = 0;
 double pedalPower = 0;        //  N-m
 double pre_pedalPower = 0;
 
-int PWM;
+int PWM = 0, i=0;
 //********************************************
 // 建立裝置物件
 //********************************************
@@ -107,6 +111,7 @@ void setup() {
 void loop() {
   //
   drivesUpdate();
+  if(i==60) i=0;
   //
   if((millis()-Gear._nowTime)>5000) {
     Gear._preTime = 0;       //前一個時間點
@@ -146,11 +151,13 @@ void loop() {
   syncBT();
   // Serial.println(pedalPower);
   // Serial.println(pedalTorque);
-  /*if(bikeSpeed>0 && bikeSpeed<15){
+  /*
+  if(bikeSpeed>0 && bikeSpeed<15){
       Serial.println((int)abs(pedalPower/pedalPower_MAX*255+ abs(gySlope)));
   }else if(bikeSpeed>15){
       Serial.println((int)abs(pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255+ abs(gySlope)));
-  }*/
+  }
+  */
 }
 
 //***************************************
