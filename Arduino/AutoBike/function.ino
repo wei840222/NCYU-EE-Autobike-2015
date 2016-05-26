@@ -152,6 +152,13 @@ double PWMValue(double Spd, double deg) {
   }
   return (int)(out*255);
 }
+double reward(double Spd) {
+  if(abs(Spd - bestBikeSpeed)<bestBikeSpeed_interval) {
+    return bestBikeSpeed_interval/abs(Spd - bestBikeSpeed);
+  }else {
+    return -abs(Spd - bestBikeSpeed);
+  }
+}
 void PWMOutput() {
     if(bikeSpeed>0 && bikeSpeed<15){
       analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*255+ abs(gySlope));
