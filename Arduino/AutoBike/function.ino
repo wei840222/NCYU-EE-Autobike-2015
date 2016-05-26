@@ -58,7 +58,7 @@ void showLCD() {
   }
   LCD1602.print("  ");
   LCD1602.print(gySlope);
-  
+
   // line 1
   LCD1602.setCursor(0, 1);
   LCD1602.print("V: ");
@@ -138,6 +138,20 @@ double getPedalPower() {
 //*********************************************************
 // PWM 輸出
 //*********************************************************
+double PWMValue(double Spd, double deg) {
+  double out = 0;
+  if(Spd>=0 && Spd<15) {
+    if(deg>=0 && deg<90) {
+      double Slope = tan(deg*DEG_TO_RAD);
+      out = 100*Slope+100*(1-Slope)/15*Spd;
+    }
+  }else if(Spd>=15 && Spd<25) {
+    out = 100*exp((Spd-15)/(Spd-25));
+  }else {
+    out = 0;
+  }
+  return (int)(out*255);
+}
 void PWMOutput() {
     if(bikeSpeed>0 && bikeSpeed<15){
       analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*255+ abs(gySlope));

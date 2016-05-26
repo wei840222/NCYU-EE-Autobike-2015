@@ -48,7 +48,9 @@ const double crank_l = 0.175;     // m
 // 功率上下限
 const double pedalPower_MAX = 25;
 const double pedalPower_MIN = 0;
-
+// PWM
+double bestBikeSpeed = 17.6;
+double bestBikeSpeed_interval = 1.5;
 //***************************************
 // 全域變數
 //***************************************
