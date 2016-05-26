@@ -162,7 +162,7 @@ double reward(double Spd) {
   }
 }
 void PWMOutput() {
-  analogWrite(pin_pwm_output, PWM);
-  PWM = (int)(255*(1-exp(-i))*PWMValue(pre_bikeSpeed, pre_gySlope)+exp(-i)(reward(bikeSpeed)+0.05*PWMValue(bikeSpeed, gySlope)));
+  analogWrite(pin_pwm_output, 255*PWM);
+  PWM = (int)((1-exp(-i))*PWM+exp(-i)(reward(bikeSpeed)+0.05*PWMValue(bikeSpeed, gySlope)));
   i++;
 }

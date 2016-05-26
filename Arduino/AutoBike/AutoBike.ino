@@ -72,7 +72,7 @@ double pre_pedalTorque = 0;
 double pedalPower = 0;        //  N-m
 double pre_pedalPower = 0;
 
-int PWM = 0, i;
+int PWM = 0, i=0;
 //********************************************
 // 建立裝置物件
 //********************************************
@@ -111,6 +111,7 @@ void setup() {
 void loop() {
   //
   drivesUpdate();
+  if(i==60) i=0;
   //
   if((millis()-Gear._nowTime)>5000) {
     Gear._preTime = 0;       //前一個時間點
