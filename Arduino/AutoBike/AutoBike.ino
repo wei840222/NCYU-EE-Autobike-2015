@@ -61,8 +61,10 @@ double rps = 0;
 double pre_rps = 0;
 double rpm = 0;
 
-double gySlope = 0;           //  degree
-double bikeSpeed = 0;
+double gySlope = 0;
+double pre_gySlope = 0;           //  degree
+double bikeSpeed = 0;         //  degree
+double pre_bikeSpeed = 0;
 double acceleration = 0;  //  m/s^2
 
 double pedalTorque= 0;        //  N
@@ -70,7 +72,7 @@ double pre_pedalTorque = 0;
 double pedalPower = 0;        //  N-m
 double pre_pedalPower = 0;
 
-int PWM;
+int PWM = 0, i;
 //********************************************
 // 建立裝置物件
 //********************************************
@@ -148,11 +150,13 @@ void loop() {
   syncBT();
   // Serial.println(pedalPower);
   // Serial.println(pedalTorque);
-  /*if(bikeSpeed>0 && bikeSpeed<15){
+  /*
+  if(bikeSpeed>0 && bikeSpeed<15){
       Serial.println((int)abs(pedalPower/pedalPower_MAX*255+ abs(gySlope)));
   }else if(bikeSpeed>15){
       Serial.println((int)abs(pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255+ abs(gySlope)));
-  }*/
+  }
+  */
 }
 
 //***************************************

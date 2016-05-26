@@ -30,9 +30,11 @@ void testGY521() {
 //*********************************************************
 void drivesUpdate() {
   // update 單車的角度
+  pre_gySlope = gySlope;
   gySlope = -getAngleY();
 
   // update 單車的速度 & rps & rpm
+  pre_bikeSpeed = bikeSpeed;
   bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
   pre_rps = rps;
   rps = Gear.getOmega()/2/PI;
@@ -138,7 +140,7 @@ double getPedalPower() {
 //*********************************************************
 // PWM 輸出
 //*********************************************************
-int PWMValue(double Spd, double deg) {
+double PWMValue(double Spd, double deg) {
   double out = 0;
   if(Spd>=0 && Spd<15) {
     if(deg>=0 && deg<90) {
@@ -150,7 +152,7 @@ int PWMValue(double Spd, double deg) {
   }else {
     out = 0;
   }
-  return (int)(out*255);
+  return out;
 }
 double reward(double Spd) {
   if(abs(Spd - bestBikeSpeed)<bestBikeSpeed_interval) {
@@ -160,6 +162,7 @@ double reward(double Spd) {
   }
 }
 void PWMOutput() {
-  analogWrite(pin_pwm_output, PWMValue(bikeSpeed, gySlope));
-  delay(750);
+  analogWrite(pin_pwm_output, PWM);
+  PWM = (int)(255*(1-exp(-i))*PWMValue(pre_bikeSpeed, pre_gySlope)+exp(-i)(reward(bikeSpeed)+0.05*PWMValue(bikeSpeed, gySlope)));
+  i++;
 }
