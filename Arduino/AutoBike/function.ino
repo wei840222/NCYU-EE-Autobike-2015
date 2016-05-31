@@ -54,9 +54,11 @@ void showLCD() {
   LCD1602.clear();
   LCD1602.print("");
   if(bikeSpeed>0 && bikeSpeed<15){
-      LCD1602.print((int)abs(pedalPower/pedalPower_MAX*255+ abs(gySlope)));
+      // LCD1602.print((int)abs(pedalPower/pedalPower_MAX*255+ abs(gySlope)));
+      LCD1602.print(PWM);
   }else if(bikeSpeed>15){
-      LCD1602.print((int)abs(pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255+ abs(gySlope)));
+      // LCD1602.print((int)abs(pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255+ abs(gySlope)));
+      LCD1602.print(PWM);
   }
   LCD1602.print("  ");
   LCD1602.print(gySlope);
