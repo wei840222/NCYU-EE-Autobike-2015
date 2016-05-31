@@ -143,9 +143,11 @@ double getPedalPower() {
 double PWMValue(double Spd, double deg) {
   double out = 0;
   if(Spd>=0 && Spd<15) {
-    if(deg>=0 && deg<90) {
+    if(deg>=0 && deg<45 ) {
       double Slope = tan(deg*DEG_TO_RAD);
-      out = 100*Slope+100*(0.5-Slope)/15*Spd;
+      out = 100*Slope+100*(1-Slope)/15*Spd;
+    }else if(deg<10){
+      out = 0;
     }
   }else if(Spd>=15 && Spd<25) {
     out = 100*exp((Spd-15)/(Spd-25));
@@ -154,6 +156,7 @@ double PWMValue(double Spd, double deg) {
   }
   return out/100;
 }
+
 double reward(double Spd) {
   if(abs(Spd - bestBikeSpeed)<bestBikeSpeed_interval) {
     return bestBikeSpeed_interval/abs(Spd - bestBikeSpeed)/100;
@@ -161,15 +164,13 @@ double reward(double Spd) {
     return -abs(Spd - bestBikeSpeed)/100;
   }
 }
+
 void PWMOutput() {
   double prePWM;
-  if(ti==10) ti=0;
   if(bikeSpeed<25) analogWrite(pin_pwm_output, (int)(255*PWM));
   else analogWrite(pin_pwm_output, 0);
-  double N = exp(-ti);
-  PWM = 4*(reward(bikeSpeed)+PWMValue(bikeSpeed, gySlope))/5 + 1*prePWM/5;
+  PWM = (reward(bikeSpeed))/5+3*(PWMValue(bikeSpeed, gySlope))/5 + prePWM/5;
   prePWM = PWM;
-  if(PWM<0) PWM = 0;
-  if(PWM>1) PWM = 1;
-  ti++;
+  if(PWM<0) PWM = 0.0;
+  if(PWM>1) PWM = 1.0;
 }

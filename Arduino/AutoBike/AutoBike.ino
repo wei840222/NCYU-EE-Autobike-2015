@@ -73,7 +73,7 @@ double pedalPower = 0;        //  N-m
 double pre_pedalPower = 0;
 
 double PWM = 0;
-int ti=0;
+
 //********************************************
 // 建立裝置物件
 //********************************************
@@ -133,7 +133,7 @@ void loop() {
 
   // 助力模式 or 非助力模式 
   // PWM輸出
-  if((millis()-lasttime)>750) {
+  if((millis()-lasttime)>100) {
     if(autoMode){
       PWMOutput();
     }
