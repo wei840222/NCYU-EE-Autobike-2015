@@ -46,11 +46,11 @@ const double wheel_R = 0.275; // m
 const double crank_m = 0.3;       // kg
 const double crank_l = 0.175;     // m
 // 功率上下限
-const double pedalPower_MAX = 25;
+const double pedalPower_MAX = 10;
 const double pedalPower_MIN = 0;
 // PWM
 double bestBikeSpeed = 17.6;
-double bestBikeSpeed_interval = 1.5;
+double bestBikeSpeed_interval = 3;
 //***************************************
 // 全域變數
 //***************************************
@@ -72,7 +72,7 @@ double pre_pedalTorque = 0;
 double pedalPower = 0;        //  N-m
 double pre_pedalPower = 0;
 
-int PWM = 0, i=0;
+int PWM = 0, ti=0;
 //********************************************
 // 建立裝置物件
 //********************************************
@@ -101,8 +101,6 @@ void setup() {
   pinMode(pin_pwm_output, OUTPUT);
   //初始化剎車按鈕
   pinMode(pin_stop_anytime, INPUT);
-  //裝置測試
-  //testGY521();
 }
 
 //********************************************
@@ -111,7 +109,6 @@ void setup() {
 void loop() {
   //
   drivesUpdate();
-  if(i==60) i=0;
   //
   if((millis()-Gear._nowTime)>5000) {
     Gear._preTime = 0;       //前一個時間點
@@ -149,15 +146,7 @@ void loop() {
   showLCD();
   // 與手機APP同步
   syncBT();
-  // Serial.println(pedalPower);
-  // Serial.println(pedalTorque);
-  /*
-  if(bikeSpeed>0 && bikeSpeed<15){
-      Serial.println((int)abs(pedalPower/pedalPower_MAX*255+ abs(gySlope)));
-  }else if(bikeSpeed>15){
-      Serial.println((int)abs(pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255+ abs(gySlope)));
-  }
-  */
+  Serial.println(255*PWM/5);
 }
 
 //***************************************
