@@ -54,9 +54,9 @@ void showLCD() {
   LCD1602.clear();
   LCD1602.print("");
   if(bikeSpeed>0 && bikeSpeed<15){
-      LCD1602.print(PWM);
+      LCD1602.print((int)255*PWM);
   }else if(bikeSpeed>15){
-      LCD1602.print(PWM);
+      LCD1602.print((int)255*PWM);
   }
   LCD1602.print("  ");
   LCD1602.print(gySlope);
@@ -148,8 +148,8 @@ double PWMValue(double Spd, double deg) {
       out = 100*Slope+100*(0.5-Slope)/15*Spd;
     }
   }else if(Spd>=15 && Spd<25) {
-    out = 100*exp(-(Spd-15)/(Spd-25));
-  }else {
+    out = 100*exp((Spd-15)/(Spd-25));
+  }else if(Spd>=25){
     out = 0;
   }
   return out;
@@ -162,11 +162,14 @@ double reward(double Spd) {
   }
 }
 void PWMOutput() {
-  if(ti==60) ti=0;
-  if(bikeSpeed<25)analogWrite(pin_pwm_output, PWM);
+  double prePWM;
+  if(ti==10) ti=0;
+  if(bikeSpeed<25) analogWrite(pin_pwm_output, (int)255*PWM);
+  else analogWrite(pin_pwm_output, 0);
   double N = exp(-ti);
-  PWM = (int)(PWM+(reward(bikeSpeed)+0.5*PWMValue(bikeSpeed, gySlope)));
-  //if(PWM<0) PWM = 0;
-  if(PWM>255) PWM = 255;
+  PWM = reward(bikeSpeed)+PWMValue(bikeSpeed, gySlope);
+  prePWM = PWM;
+  if(PWM<0) PWM = 0;
+  //if(PWM>100) PWM = 100;
   ti++;
 }

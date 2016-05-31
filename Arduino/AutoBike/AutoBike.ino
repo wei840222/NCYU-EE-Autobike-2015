@@ -51,6 +51,7 @@ const double pedalPower_MIN = 0;
 // PWM
 double bestBikeSpeed = 17.6;
 double bestBikeSpeed_interval = 3;
+double lasttime;
 //***************************************
 // 全域變數
 //***************************************
@@ -71,7 +72,8 @@ double pre_pedalTorque = 0;
 double pedalPower = 0;        //  N-m
 double pre_pedalPower = 0;
 
-int PWM = 0, ti=0;
+double PWM = 0;
+int ti=0;
 //********************************************
 // 建立裝置物件
 //********************************************
@@ -131,14 +133,18 @@ void loop() {
 
   // 助力模式 or 非助力模式 
   // PWM輸出
-  if(autoMode){
-    PWMOutput();
+  if((millis()-lasttime)>750) {
+    if(autoMode){
+      PWMOutput();
+    }
+    lasttime = millis();
   }
+ 
   // 顯示螢幕
   showLCD();
   // 與手機APP同步
   syncBT();
-  Serial.println(PWM);
+  Serial.println((int)255*PWM);
 }
 
 //***************************************
