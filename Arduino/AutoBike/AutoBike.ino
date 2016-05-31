@@ -144,7 +144,7 @@ void loop() {
   showLCD();
   // 與手機APP同步
   syncBT();
-  Serial.println((int)255*PWM);
+  Serial.println((int)(255*PWM));
 }
 
 //***************************************
