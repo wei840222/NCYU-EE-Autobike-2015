@@ -55,7 +55,6 @@ double bestBikeSpeed_interval = 3;
 // 全域變數
 //***************************************
 boolean autoMode = true;
-boolean pwmSwitch = true;
 
 double rps = 0;
 double pre_rps = 0;
@@ -130,23 +129,16 @@ void loop() {
   //    autoMode = 1;
   //  }
 
-  // 助力模式 or 非助力模式
-  if(autoMode){
-    if(bikeSpeed >= 25) {
-      pwmSwitch = 0;
-    }else if(bikeSpeed < 25) {
-      pwmSwitch = 1;
-    }
-  }else {
-    pwmSwitch = 0;
-  }
+  // 助力模式 or 非助力模式 
   // PWM輸出
-  if(pwmSwitch) PWMOutput();
+  if(autoMode){
+    PWMOutput();
+  }
   // 顯示螢幕
   showLCD();
   // 與手機APP同步
   syncBT();
-  Serial.println(255*PWM/5);
+  Serial.println(PWM);
 }
 
 //***************************************
