@@ -35,7 +35,7 @@ void drivesUpdate() {
   pre_bikeSpeed = bikeSpeed;
   bikeSpeed = (Wheel.getOmega()*wheel_R*3.6)<100?((Wheel.getOmega()*wheel_R*3.6)>0?(Wheel.getOmega()*wheel_R*3.6):0):pre_bikeSpeed; // (km/hr)
   pre_rps = rps;
-  rps = Gear.getOmega()/2/PI;
+  rps = (Gear.getOmega()/2/PI)<150?((Gear.getOmega()/2/PI)>0?Gear.getOmega()/2/PI:0):pre_rps;
   rpm = rps * 60;
   // update 單車的加速度
   acceleration = Wheel.getAlpha()*wheel_R;
