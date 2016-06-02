@@ -33,7 +33,7 @@ void drivesUpdate() {
   gySlope = -getAngleY();
   // update 單車的速度 & rps & rpm
   pre_bikeSpeed = bikeSpeed;
-  bikeSpeed = (Wheel.getOmega()*wheel_R*3.6)<100?((Wheel.getOmega()*wheel_R*3.6)>0?(Wheel.getOmega()*wheel_R*3.6):0):pre_bikeSpeed; // (km/hr)
+  bikeSpeed = abs(Wheel.getOmega()*wheel_R*3.6-pre_bikeSpeed)<3?((Wheel.getOmega()*wheel_R*3.6)>0?(Wheel.getOmega()*wheel_R*3.6):0):pre_bikeSpeed; // (km/hr)
   pre_rps = rps;
   rps = (Gear.getOmega()/2/PI)<150?((Gear.getOmega()/2/PI)>0?Gear.getOmega()/2/PI:0):pre_rps;
   rpm = rps * 60;
@@ -142,7 +142,8 @@ double getPedalPower() {
 //*********************************************************
 double PWMValue(double Spd, double deg) {
   double out = 0, P_reward = 0.0;
-  abs(pedalPower-pre_pedalPower)<0.1?P_reward = 0.0:(pedalPower-pre_pedalPower)>0?P_reward = -0.05:P_reward = 0.05;
+  abs(pedalPower-pre_pedalPower)<0.1?P_reward = 0.0:(pedalPower-pre_pedalPower)>0?P_reward = -0.1:P_reward = 0.1;
+  
   if(Spd>=0 && Spd<15) {
     if(deg>=0 && deg<45 ) {
       double Slope = tan(deg*DEG_TO_RAD);
@@ -179,5 +180,6 @@ void PWMOutput() {
   PWM = 4*(PWMValue(bikeSpeed, gySlope))/5 + (reward(bikeSpeed))/30 + prePWM/15;
   prePWM = PWM;
   if(PWM<0) PWM = 0.0;
-  if(PWM>1) PWM = 1.0;
+  if(PWM>1) PWM = prePWM;
+  abs(pedalPower-pre_pedalPower)==0?PWM = 0.0:PWM = PWM;
 }
