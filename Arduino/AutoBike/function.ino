@@ -1,3 +1,4 @@
+
 //*********************************************************
 // 裝置測試
 //*********************************************************
@@ -32,7 +33,7 @@ void drivesUpdate() {
   gySlope = -getAngleY();
   // update 單車的速度 & rps & rpm
   pre_bikeSpeed = bikeSpeed;
-  bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
+  bikeSpeed = (Wheel.getOmega()*wheel_R*3.6)<100?((Wheel.getOmega()*wheel_R*3.6)>0?(Wheel.getOmega()*wheel_R*3.6):0):pre_bikeSpeed; // (km/hr)
   pre_rps = rps;
   rps = Gear.getOmega()/2/PI;
   rpm = rps * 60;
@@ -95,10 +96,22 @@ double getAngleX() {
 
 double getAngleY() {
   int16_t ax, ay, az;
-  double Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
-  double Vay_offset = acceleration * cos(gySlope) * 16384 / 9.8;
+  /*
+  double Vax_offset;
+  double Vay_offset;
+  if(acceleration > -100 || acceleration < 100) {
+    Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
+    Vay_offset = acceleration * cos(gySlope) * 16384 / 9.8;
+  }
+  else {
+    Vax_offset = 0;
+    Vay_offset = 0;
+  }
   GY521.getAcceleration(&ax, &ay, &az);
   return 60 * atan((ay - Vay_offset) / sqrt(pow(ax - Vax_offset, 2) + pow(az, 2)));
+  */
+  GY521.getAcceleration(&ax, &ay, &az);
+  return 60 * atan((ay) / sqrt(pow(ax, 2) + pow(az, 2)));
 }
 
 double getAngleZ() {
@@ -134,7 +147,7 @@ double PWMValue(double Spd, double deg) {
     if(deg>=0 && deg<45 ) {
       double Slope = tan(deg*DEG_TO_RAD);
       out = 100*Slope+100*(1-Slope)/15*Spd;
-    }else if(deg<10){
+    }else if(deg<0){
       out = 0;
     }else if(deg>45){
       out = 100;
