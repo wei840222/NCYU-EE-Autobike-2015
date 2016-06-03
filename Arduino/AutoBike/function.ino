@@ -1,3 +1,4 @@
+
 //*********************************************************
 // 裝置測試
 //*********************************************************
@@ -74,8 +75,7 @@ void syncBT() {
       autoMode = false;
   }*/
   // send
-  output += (String)gySlope + ":";
-  output += (String)bikeSpeed;
+  output = "A: "+ (String)gySlope + " S: " + (String)bikeSpeed;
   BT.write(output);
   output = "";
   delay(100);
