@@ -37,7 +37,7 @@ const double gear_m = 2;     // kg
 //const double I = gear_R*gear_R*gear_m/2+2*crank_m*crank_l*crank_l/3;
 const double I = gear_R*gear_R*gear_m/2;
 // for hall 2: wheel
-const int wheel_magnetN = 18;
+const int wheel_magnetN = 6;
 const double wheel_R = 0.275; // m
 // 曲柄
 const double crank_m = 0.3;       // kg
@@ -46,8 +46,8 @@ const double crank_l = 0.175;     // m
 const double pedalPower_MAX = 10;
 const double pedalPower_MIN = 0;
 // PWM
-double bestBikeSpeed = 17.6;
-double bestBikeSpeed_interval = 3;
+double bestBikeSpeed = 15.6;
+double bestBikeSpeed_interval = 5;
 double lasttime;
 //***************************************
 // 全域變數
@@ -143,7 +143,7 @@ void loop() {
   // 與手機APP同步
   syncBT();
   // 測試用
-  Serial.println((int)(255*PWM));
+  // Serial.println((int)(255*PWM));
 }
 
 //***************************************

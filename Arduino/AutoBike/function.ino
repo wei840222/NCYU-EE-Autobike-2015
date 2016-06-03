@@ -33,9 +33,9 @@ void drivesUpdate() {
   gySlope = -getAngleY();
   // update 單車的速度 & rps & rpm
   pre_bikeSpeed = bikeSpeed;
-  bikeSpeed = abs(Wheel.getOmega()*wheel_R*3.6-pre_bikeSpeed)<3?((Wheel.getOmega()*wheel_R*3.6)>0?(Wheel.getOmega()*wheel_R*3.6):0):pre_bikeSpeed; // (km/hr)
+  bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
   pre_rps = rps;
-  rps = (Gear.getOmega()/2/PI)<150?((Gear.getOmega()/2/PI)>0?Gear.getOmega()/2/PI:0):pre_rps;
+  rps = Gear.getOmega()/2/PI;
   rpm = rps * 60;
   // update 單車的加速度
   acceleration = Wheel.getAlpha()*wheel_R;
@@ -75,8 +75,7 @@ void syncBT() {
       autoMode = false;
   }*/
   // send
-  output += (String)gySlope + ":";
-  output += (String)bikeSpeed;
+  output = "A: "+ (String)gySlope + " S: " + (String)bikeSpeed;
   BT.write(output);
   output = "";
   delay(100);
@@ -96,22 +95,10 @@ double getAngleX() {
 
 double getAngleY() {
   int16_t ax, ay, az;
-  /*
-  double Vax_offset;
-  double Vay_offset;
-  if(acceleration > -100 || acceleration < 100) {
-    Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
-    Vay_offset = acceleration * cos(gySlope) * 16384 / 9.8;
-  }
-  else {
-    Vax_offset = 0;
-    Vay_offset = 0;
-  }
+  double Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
+  double Vay_offset = acceleration * cos(gySlope) * 16384 / 9.8;
   GY521.getAcceleration(&ax, &ay, &az);
   return 60 * atan((ay - Vay_offset) / sqrt(pow(ax - Vax_offset, 2) + pow(az, 2)));
-  */
-  GY521.getAcceleration(&ax, &ay, &az);
-  return 60 * atan((ay) / sqrt(pow(ax, 2) + pow(az, 2)));
 }
 
 double getAngleZ() {
@@ -142,13 +129,12 @@ double getPedalPower() {
 //*********************************************************
 double PWMValue(double Spd, double deg) {
   double out = 0, P_reward = 0.0;
-  abs(pedalPower-pre_pedalPower)<0.1?P_reward = 0.0:(pedalPower-pre_pedalPower)>0?P_reward = -0.1:P_reward = 0.1;
-  
+  abs(pedalPower-pre_pedalPower)<0.1?P_reward = 0.0:(pedalPower-pre_pedalPower)>0?P_reward = -0.05:P_reward = 0.05;
   if(Spd>=0 && Spd<15) {
     if(deg>=0 && deg<45 ) {
       double Slope = tan(deg*DEG_TO_RAD);
       out = 100*Slope+100*(1-Slope)/15*Spd;
-    }else if(deg<0){
+    }else if(deg<10){
       out = 0;
     }else if(deg>45){
       out = 100;
@@ -180,6 +166,5 @@ void PWMOutput() {
   PWM = 4*(PWMValue(bikeSpeed, gySlope))/5 + (reward(bikeSpeed))/30 + prePWM/15;
   prePWM = PWM;
   if(PWM<0) PWM = 0.0;
-  if(PWM>1) PWM = prePWM;
-  abs(pedalPower-pre_pedalPower)==0?PWM = 0.0:PWM = PWM;
+  if(PWM>1) PWM = 1.0;
 }
