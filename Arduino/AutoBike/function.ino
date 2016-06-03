@@ -7,7 +7,6 @@ void testLCD() {
   delay(1500);
   LCD1602.clear();
 }
-
 void testSerial() {
   while(!Serial.available()) {
     LCD1602.clear();
@@ -16,7 +15,6 @@ void testSerial() {
     LCD1602.clear();
   }
 }
-
 void testGY521() {
   while(!GY521.testConnection()) {
     LCD1602.clear();
@@ -30,46 +28,39 @@ void testGY521() {
 //*********************************************************
 void drivesUpdate() {
   // update 單車的角度
+  pre_gySlope = gySlope;
   gySlope = -getAngleY();
-
   // update 單車的速度 & rps & rpm
+  pre_bikeSpeed = bikeSpeed;
   bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
   pre_rps = rps;
   rps = Gear.getOmega()/2/PI;
   rpm = rps * 60;
-
   // update 單車的加速度
   acceleration = Wheel.getAlpha()*wheel_R;
-
   // update 腳踏力道 & 腳踏功率
   pre_pedalTorque = pedalTorque;
   pedalTorque = getPedalTorque();
+  pre_pedalPower = pedalPower;
   pedalPower = getPedalPower();
 }
-
 void showLCD() {
   // line 0
   LCD1602.clear();
   LCD1602.print("");
-  if(bikeSpeed>0 && bikeSpeed<15){
-      LCD1602.print((int)abs(pedalPower/pedalPower_MAX*255+ abs(gySlope)));
-  }else if(bikeSpeed>15){
-      LCD1602.print((int)abs(pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255+ abs(gySlope)));
-  }
+  if(bikeSpeed>0&&bikeSpeed<25)LCD1602.print((int)(255*PWM));
+  else  LCD1602.print("0");
   LCD1602.print("  ");
   LCD1602.print(gySlope);
-  
   // line 1
   LCD1602.setCursor(0, 1);
   LCD1602.print("V: ");
   LCD1602.print(bikeSpeed);
   LCD1602.print("  ");
   LCD1602.print(rpm);
-
   // end
   delay(1000);
 }
-
 void syncBT() {
   String input;
   String output;
@@ -127,23 +118,53 @@ double getPedalTorque() {
   else
     return 0;
 }
-
 double getPedalPower() {
   if(abs(I*Gear.getAlpha())>0)
     return I*Gear.getAlpha()*Gear.getOmega();// (N-m)/s) = (W);
   else
     return 0;
 }
-
 //*********************************************************
 // PWM 輸出
 //*********************************************************
-void PWMOutput() {
-    if(bikeSpeed>0 && bikeSpeed<15){
-      analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*255+ abs(gySlope));
-      delay(750);
-    }else if(bikeSpeed>15){
-      analogWrite(pin_pwm_output, pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255+ abs(gySlope));
-      delay(250);
+double PWMValue(double Spd, double deg) {
+  double out = 0, P_reward = 0.0;
+  abs(pedalPower-pre_pedalPower)<0.1?P_reward = 0.0:(pedalPower-pre_pedalPower)>0?P_reward = -0.05:P_reward = 0.05;
+  if(Spd>=0 && Spd<15) {
+    if(deg>=0 && deg<45 ) {
+      double Slope = tan(deg*DEG_TO_RAD);
+      out = 100*Slope+100*(1-Slope)/15*Spd;
+    }else if(deg<10){
+      out = 0;
+    }else if(deg>45){
+      out = 100;
     }
+  }else if(Spd>=15 && Spd<25) {
+    out = 100*exp((Spd-15)/(Spd-25));
+  }else if(Spd>=25){
+    out = 0;
+  }
+  return (1+P_reward)*out/100;
+}
+double reward(double Spd) {
+  if(abs(Spd - bestBikeSpeed)<bestBikeSpeed_interval) {
+    return bestBikeSpeed_interval/abs(Spd - bestBikeSpeed)/100;
+  }else {
+    return -abs(Spd - bestBikeSpeed)/100;
+  }
+}
+void PWMOutput() {
+  double prePWM;
+  if(bikeSpeed<25){
+    analogWrite(pin_pwm_output, (int)(255*PWM));
+    analogWrite(11, (int)(255*PWM));
+  }
+  else {
+    analogWrite(pin_pwm_output, 0);
+    analogWrite(11, 0);
+  }
+  PWM = 4*(PWMValue(bikeSpeed, gySlope))/5 + (reward(bikeSpeed))/30 + prePWM/15;
+  prePWM = PWM;
+  if(PWM<0) PWM = 0.0;
+  if(PWM>1) PWM = 1.0;
 }

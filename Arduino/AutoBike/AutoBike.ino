@@ -30,45 +30,49 @@
 //***************************************
 // for bluetooth
 const int baudrate = 9600;   //  bps
-
 // for hall 1: gear
 const int gear_magnetN = 6;
 const double gear_R = 0.105; // m
 const double gear_m = 2;     // kg
 //const double I = gear_R*gear_R*gear_m/2+2*crank_m*crank_l*crank_l/3;
 const double I = gear_R*gear_R*gear_m/2;
-
 // for hall 2: wheel
 const int wheel_magnetN = 6;
 const double wheel_R = 0.275; // m
-
 // 曲柄
 const double crank_m = 0.3;       // kg
 const double crank_l = 0.175;     // m
 // 功率上下限
-const double pedalPower_MAX = 25;
+const double pedalPower_MAX = 10;
 const double pedalPower_MIN = 0;
-
+// PWM
+double bestBikeSpeed = 15.6;
+double bestBikeSpeed_interval = 5;
+double lasttime;
 //***************************************
 // 全域變數
 //***************************************
+// 模式開關
 boolean autoMode = true;
-boolean pwmSwitch = true;
-
+// 計算腳踏圈數
 double rps = 0;
 double pre_rps = 0;
 double rpm = 0;
-
-double gySlope = 0;           //  degree
-double bikeSpeed = 0;
+// 車體角度
+double gySlope = 0;
+double pre_gySlope = 0;           //  degree
+// 車體速度與加速度
+double bikeSpeed = 0;         //  degree
+double pre_bikeSpeed = 0;
 double acceleration = 0;  //  m/s^2
-
+// 腳踏力
 double pedalTorque= 0;        //  N
 double pre_pedalTorque = 0;
 double pedalPower = 0;        //  N-m
 double pre_pedalPower = 0;
+// 馬查輸出
+double PWM = 0;
 
-int PWM;
 //********************************************
 // 建立裝置物件
 //********************************************
@@ -76,7 +80,7 @@ LiquidCrystal LCD1602(pin_lcd_RS, pin_lcd_E, pin_lcd_D4, pin_lcd_D5, pin_lcd_D6,
 MPU6050 GY521;
 Hall Gear(pin_hall_1, gear_magnetN);
 Hall Wheel(pin_hall_2, wheel_magnetN);
-HC05 BT(baudrate);  //包含初始化BT
+HC05 BT(baudrate);  //包含初始化BT模組
 
 //********************************************
 // 初始化設定
@@ -84,10 +88,10 @@ HC05 BT(baudrate);  //包含初始化BT
 void setup() {
   //設定baudrate(arduino)
   Serial.begin(baudrate);
-  //霍爾感測器中斷初始化
-  //踏板
+  //中斷函式初始化
+  //霍爾感測器--踏板
   attachInterrupt(0, ISR_0, FALLING);
-  //後輪
+  //霍爾感測器--後輪
   attachInterrupt(1, ISR_1, FALLING);
   //初始化LCD
   LCD1602.begin(16, 2);
@@ -95,19 +99,18 @@ void setup() {
   GY521.initialize();
   //初始化output
   pinMode(pin_pwm_output, OUTPUT);
+  pinMode(11, OUTPUT);
   //初始化剎車按鈕
   pinMode(pin_stop_anytime, INPUT);
-  //裝置測試
-  //testGY521();
 }
 
 //********************************************
 // 主迴圈
 //********************************************
 void loop() {
-  //
+  // 更新狀態
   drivesUpdate();
-  //
+  // 看門狗
   if((millis()-Gear._nowTime)>5000) {
     Gear._preTime = 0;       //前一個時間點
     Gear._preOmega = 0;
@@ -119,38 +122,28 @@ void loop() {
     Wheel._preOmega = 0;
     Wheel._nowOmega = 0;
     Wheel._nowAlpha = 0;
+    lasttime = millis();
   }
   // 剎車功能
-
   //  if(!pin_stop_anytime) {
   //    autoMode = 0;
   //  }else {
   //    autoMode = 1;
   //  }
-
-  // 助力模式 or 非助力模式
-  if(autoMode){
-    if(bikeSpeed >= 25) {
-      pwmSwitch = 0;
-    }else if(bikeSpeed < 25) {
-      pwmSwitch = 1;
-    }
-  }else {
-    pwmSwitch = 0;
-  }
+  // 助力模式 or 非助力模式 
   // PWM輸出
-  if(pwmSwitch) PWMOutput();
+  if(autoMode){
+    if((millis()-lasttime)>100) {
+      PWMOutput();
+    }
+    lasttime = millis();
+  }
   // 顯示螢幕
   showLCD();
   // 與手機APP同步
   syncBT();
-  // Serial.println(pedalPower);
-  // Serial.println(pedalTorque);
-  /*if(bikeSpeed>0 && bikeSpeed<15){
-      Serial.println((int)abs(pedalPower/pedalPower_MAX*255+ abs(gySlope)));
-  }else if(bikeSpeed>15){
-      Serial.println((int)abs(pedalPower/pedalPower_MAX*(1-(int)(bikeSpeed-15)/9)*255+ abs(gySlope)));
-  }*/
+  // 測試用
+  Serial.println((int)(255*PWM));
 }
 
 //***************************************
