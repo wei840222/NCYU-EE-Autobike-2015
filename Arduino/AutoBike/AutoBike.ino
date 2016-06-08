@@ -108,7 +108,14 @@ void setup() {
 // 主迴圈
 //********************************************
 void loop() {
-  if(N==60) N=0;
+    if((millis()-lasttime)>5000){
+      N++;
+      if(N==10) {
+        N=0;
+        lasttime = millis();
+      }
+    }
+
   // 更新狀態
   drivesUpdate();
   // 看門狗
@@ -136,8 +143,7 @@ void loop() {
   if(autoMode){
     if((millis()-lasttime)>100) {
       PWMOutput();
-    }
-    lasttime = millis();
+    }  
   }
   // 顯示螢幕
   showLCD();

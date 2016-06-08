@@ -149,7 +149,7 @@ void PWMOutput() {
     analogWrite(pin_pwm_output, 0);
     analogWrite(11, 0);
   }
-  PWM = 4*exp(-(N++))*(PWMValue(bikeSpeed, gySlope))/5 + prePWM/15;
+  PWM = 4*exp(-N)*(PWMValue(bikeSpeed, gySlope))/5 + prePWM/15;
   prePWM = PWM;
   if(PWM<0) PWM = 0.0;
   if(PWM>1) PWM = 1.0;
