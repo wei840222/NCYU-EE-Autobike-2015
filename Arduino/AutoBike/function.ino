@@ -33,23 +33,13 @@ void drivesUpdate() {
   
   // update 單車的速度
   double get_bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
-  if((get_bikeSpeed-pre_bikeSpeed)>5)
-    bikeSpeed = pre_bikeSpeed;
-  else
-  {
-    bikeSpeed = get_bikeSpeed;
-    pre_bikeSpeed = bikeSpeed;
-  }
+  bikeSpeed = get_bikeSpeed;
+  pre_bikeSpeed = bikeSpeed;
   
   // update 單車的rps & rpm
   double get_rps = Gear.getOmega()/2/PI;
-  if((get_rps-pre_rps)>5)
-    rps = pre_rps;
-  else
-  {
-    rps = get_rps;
-    pre_rps = rps;
-  }
+  rps = get_rps;
+  pre_rps = rps;
   rpm = rps * 60;
   
   // update 單車的加速度
@@ -70,7 +60,7 @@ void showLCD() {
   // line 1
   LCD1602.setCursor(0, 1);
   LCD1602.print("V:"); LCD1602.print((int)bikeSpeed);
-  LCD1602.print(" RPM:"); LCD1602.print((int)rpm);
+  LCD1602.print(" "); LCD1602.print((int)pedalTorque);
   // end
   delay(100);
 }
@@ -159,7 +149,7 @@ void PWMOutput() {
     analogWrite(pin_pwm_output, 0);
     analogWrite(11, 0);
   }
-  PWM = 4*(PWMValue(bikeSpeed, gySlope))/5 + (reward(bikeSpeed))/30 + prePWM/15;
+  PWM = 4*exp(-(N++))*(PWMValue(bikeSpeed, gySlope))/5 + prePWM/15;
   prePWM = PWM;
   if(PWM<0) PWM = 0.0;
   if(PWM>1) PWM = 1.0;
