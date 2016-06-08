@@ -108,7 +108,7 @@ void setup() {
 // 主迴圈
 //********************************************
 void loop() {
-    if((millis()-lasttime)>5000){
+    if((millis()-lasttime)>1500){
       N++;
       if(N==10) {
         N=0;
