@@ -143,7 +143,7 @@ void loop() {
   // 與手機APP同步
   syncBT();
   // 測試用
-  Serial.println((int)(255*PWM));
+  //Serial.println((int)(255*PWM));
 }
 
 //***************************************

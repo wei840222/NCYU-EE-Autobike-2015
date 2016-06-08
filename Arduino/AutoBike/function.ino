@@ -30,36 +30,49 @@ void drivesUpdate() {
   // update 單車的角度
   pre_gySlope = gySlope;
   gySlope = -getAngleY();
-  // update 單車的速度 & rps & rpm
-  pre_bikeSpeed = bikeSpeed;
-  bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
-  pre_rps = rps;
-  rps = Gear.getOmega()/2/PI;
+  
+  // update 單車的速度
+  double get_bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
+  if((get_bikeSpeed-pre_bikeSpeed)>5)
+    bikeSpeed = pre_bikeSpeed;
+  else
+  {
+    bikeSpeed = get_bikeSpeed;
+    pre_bikeSpeed = bikeSpeed;
+  }
+  
+  // update 單車的rps & rpm
+  double get_rps = Gear.getOmega()/2/PI;
+  if((get_rps-pre_rps)>5)
+    rps = pre_rps;
+  else
+  {
+    rps = get_rps;
+    pre_rps = rps;
+  }
   rpm = rps * 60;
+  
   // update 單車的加速度
   acceleration = Wheel.getAlpha()*wheel_R;
+  
   // update 腳踏力道 & 腳踏功率
   pre_pedalTorque = pedalTorque;
   pedalTorque = getPedalTorque();
   pre_pedalPower = pedalPower;
   pedalPower = getPedalPower();
 }
+
 void showLCD() {
   // line 0
   LCD1602.clear();
-  LCD1602.print("");
-  if(bikeSpeed>0&&bikeSpeed<25)LCD1602.print((int)(255*PWM));
-  else  LCD1602.print("0");
-  LCD1602.print("  ");
-  LCD1602.print(gySlope);
+  LCD1602.print("P:"); LCD1602.print((int)(255*PWM));
+  LCD1602.print(" S:"); LCD1602.print((int)gySlope);
   // line 1
   LCD1602.setCursor(0, 1);
-  LCD1602.print("V: ");
-  LCD1602.print(bikeSpeed);
-  LCD1602.print("  ");
-  LCD1602.print(rpm);
+  LCD1602.print("V:"); LCD1602.print((int)bikeSpeed);
+  LCD1602.print(" RPM:"); LCD1602.print((int)rpm);
   // end
-  delay(1000);
+  delay(100);
 }
 void syncBT() {
   String input;
@@ -74,8 +87,7 @@ void syncBT() {
       autoMode = false;
   }*/
   // send
-  output += (String)gySlope + ":";
-  output += (String)bikeSpeed;
+  output = "Slope:" + (String)gySlope + " Speed:" + (String)bikeSpeed;
   BT.write(output);
   output = "";
   delay(100);
@@ -85,30 +97,12 @@ void syncBT() {
 // 計算Y軸角度值
 //*********************************************************
 //單位SI制
-double getAngleX() {
-  int16_t ax, ay, az;
-  double Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
-  double Vay_offset = acceleration * cos(gySlope) * 16384 / 9.8;
-  GY521.getAcceleration(&ax, &ay, &az);
-  return 60 * atan((ax - Vax_offset) / sqrt(pow(ay - Vay_offset, 2) + pow(az, 2)));
-}
-
 double getAngleY() {
   int16_t ax, ay, az;
-  //double Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
-  //double Vay_offset = acceleration * cos(gySlope) * 16384 / 9.8;
   GY521.getAcceleration(&ax, &ay, &az);
-  //return 60 * atan((ay - Vay_offset) / sqrt(pow(ax - Vax_offset, 2) + pow(az, 2)));
-  return 60 * atan((ay) / sqrt(pow(ax, 2) + pow(az, 2)));  
+  return 60 * atan(ay / sqrt(pow(ax, 2) + pow(az, 2)));
 }
 
-double getAngleZ() {
-  int16_t ax, ay, az;
-  double Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
-  double Vay_offset = acceleration * cos(gySlope) * 16384 / 9.8;
-  GY521.getAcceleration(&ax, &ay, &az);
-  return 60 * atan((az) / sqrt(pow(ax - Vax_offset, 2) + pow(ay - Vay_offset, 2)));
-}
 //*********************************************************
 // 計算腳踏力量
 //*********************************************************
@@ -125,6 +119,7 @@ double getPedalPower() {
   else
     return 0;
 }
+
 //*********************************************************
 // PWM 輸出
 //*********************************************************
