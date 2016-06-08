@@ -95,10 +95,11 @@ double getAngleX() {
 
 double getAngleY() {
   int16_t ax, ay, az;
-  double Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
-  double Vay_offset = acceleration * cos(gySlope) * 16384 / 9.8;
+  //double Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
+  //double Vay_offset = acceleration * cos(gySlope) * 16384 / 9.8;
   GY521.getAcceleration(&ax, &ay, &az);
-  return 60 * atan((ay - Vay_offset) / sqrt(pow(ax - Vax_offset, 2) + pow(az, 2)));
+  //return 60 * atan((ay - Vay_offset) / sqrt(pow(ax - Vax_offset, 2) + pow(az, 2)));
+  return 60 * atan((ay) / sqrt(pow(ax, 2) + pow(az, 2)));  
 }
 
 double getAngleZ() {
