@@ -37,7 +37,7 @@ const double gear_m = 2;     // kg
 //const double I = gear_R*gear_R*gear_m/2+2*crank_m*crank_l*crank_l/3;
 const double I = gear_R*gear_R*gear_m/2;
 // for hall 2: wheel
-const int wheel_magnetN = 6;
+const int wheel_magnetN = 18;
 const double wheel_R = 0.275; // m
 // 曲柄
 const double crank_m = 0.3;       // kg
