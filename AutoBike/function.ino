@@ -1,90 +1,75 @@
-
-//*********************************************************
-// 裝置測試
-//*********************************************************
-void testLCD() {
-  LCD1602.clear();
-  LCD1602.print("LED is OK!");
-  delay(1500);
-  LCD1602.clear();
-}
-void testSerial() {
-  while(!Serial.available()) {
-    LCD1602.clear();
-    LCD1602.print("BT connect failed");
-    delay(1000);
-    LCD1602.clear();
-  }
-}
-void testGY521() {
-  while(!GY521.testConnection()) {
-    LCD1602.clear();
-    LCD1602.print("GY521 connect failed!");
-    delay(1000);
-    LCD1602.clear();
-  }
-}
 //*********************************************************
 // 更新函式
 //*********************************************************
 void drivesUpdate() {
-  // update 單車的角度
+  //單車的角度
   pre_gySlope = gySlope;
   gySlope = -getAngleY();
-  // update 單車的速度 & rps & rpm
+  //單車的速度
   pre_bikeSpeed = bikeSpeed;
   bikeSpeed = Wheel.getOmega()*wheel_R*3.6; // (km/hr)
+  //單車的加速度
+  acceleration = Wheel.getAlpha()*wheel_R;
+  //踏板rps & rpm
   pre_rps = rps;
   rps = Gear.getOmega()/2/PI;
   rpm = rps * 60;
-  // update 單車的加速度
-  acceleration = Wheel.getAlpha()*wheel_R;
-  // update 腳踏力道 & 腳踏功率
+  //腳踏力道 & 腳踏功率
   pre_pedalTorque = pedalTorque;
   pedalTorque = getPedalTorque();
   pre_pedalPower = pedalPower;
   pedalPower = getPedalPower();
 }
+
 void showLCD() {
   // line 0
   LCD1602.clear();
-  LCD1602.print("");
-  if(bikeSpeed>0&&bikeSpeed<25)LCD1602.print((int)(255*PWM));
-  else  LCD1602.print("0");
-  LCD1602.print("  ");
+  LCD1602.print((int)(255*PWM));
+  LCD1602.print(" ");
   LCD1602.print(gySlope);
   // line 1
   LCD1602.setCursor(0, 1);
-  LCD1602.print("V: ");
+  LCD1602.print("V:");
   LCD1602.print(bikeSpeed);
-  LCD1602.print("  ");
+  LCD1602.print(" RPM:");
   LCD1602.print(rpm);
   // end
-  delay(1000);
+  delay(100);
 }
 void syncBT() {
   String input;
   String output;
+  /*
   // recive
-  /*if(Serial.available() > 0) {
-    input = BT.read();
-    // 判斷指令
-    if(input=="auto")
-      autoMode = true;
-    if(input=="off")
-      autoMode = false;
-  }*/
+  if(Serial.available() > 0) {
+    char buffer;
+    while (Serial.available()) {
+      buffer = Serial.read();
+      input += (char)buffer;
+    }
+  }
+  // 判斷指令
+  if(input=="auto")
+    autoMode = true;
+  if(input=="off")
+    autoMode = false;
+  input = "";
+  */
   // send
-  output = "A: "+ (String)gySlope + " S: " + (String)bikeSpeed;
-  BT.write(output);
+  output = "Slope: " + (String)gySlope + " Speed: " + (String)bikeSpeed + "km/h";
+  char *buffer;
+  output.toCharArray(buffer, output.length());
+  if(Serial.available()) {
+    for (int i = 0;i < output.length();i++) {
+      Serial.write((byte)buffer[i]);
+    }
+  }
   output = "";
-  delay(100);
 }
 
 //*********************************************************
-// 計算Y軸角度值
+// 計算三軸坡度值
 //*********************************************************
-//單位SI制
 double getAngleX() {
   int16_t ax, ay, az;
   double Vax_offset = acceleration * sin(gySlope) * 16384 / 9.8;
@@ -108,6 +93,7 @@ double getAngleZ() {
   GY521.getAcceleration(&ax, &ay, &az);
   return 60 * atan((az) / sqrt(pow(ax - Vax_offset, 2) + pow(ay - Vay_offset, 2)));
 }
+
 //*********************************************************
 // 計算腳踏力量
 //*********************************************************
@@ -124,6 +110,7 @@ double getPedalPower() {
   else
     return 0;
 }
+
 //*********************************************************
 // PWM 輸出
 //*********************************************************

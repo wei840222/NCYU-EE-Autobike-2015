@@ -4,7 +4,6 @@
 #include <LiquidCrystal.h>
 #include "MPU6050.h"
 #include "Hall.h"
-#include "HC05.h"
 
 //********************************************
 // 定義腳位
@@ -14,7 +13,6 @@
 #define pin_hall_1 2
 #define pin_hall_2 3
 #define pin_lcd_RS 9
-// LCD R/W 要接地
 #define pin_lcd_E 8
 #define pin_lcd_D4 7
 #define pin_lcd_D5 6
@@ -28,50 +26,51 @@
 //***************************************
 // 常數
 //***************************************
-// for bluetooth
-const int baudrate = 9600;   //  bps
-// for hall 1: gear
+// 藍芽
+const int baudrate = 9600;   // bps
+// 輪子
+const int wheel_magnetN = 18;
+const double wheel_R = 0.275; // m
+// 踏板
 const int gear_magnetN = 6;
 const double gear_R = 0.105; // m
 const double gear_m = 2;     // kg
 //const double I = gear_R*gear_R*gear_m/2+2*crank_m*crank_l*crank_l/3;
 const double I = gear_R*gear_R*gear_m/2;
-// for hall 2: wheel
-const int wheel_magnetN = 6;
-const double wheel_R = 0.275; // m
 // 曲柄
 const double crank_m = 0.3;       // kg
 const double crank_l = 0.175;     // m
 // 功率上下限
 const double pedalPower_MAX = 10;
 const double pedalPower_MIN = 0;
-// PWM
-double bestBikeSpeed = 15.6;
-double bestBikeSpeed_interval = 5;
-double lasttime;
+
 //***************************************
 // 全域變數
 //***************************************
-// 模式開關
-boolean autoMode = true;
 // 計算腳踏圈數
 double rps = 0;
 double pre_rps = 0;
 double rpm = 0;
 // 車體角度
 double gySlope = 0;
-double pre_gySlope = 0;           //  degree
+double pre_gySlope = 0;       //  degree
 // 車體速度與加速度
-double bikeSpeed = 0;         //  degree
+double bikeSpeed = 0;         //  km/h
 double pre_bikeSpeed = 0;
-double acceleration = 0;  //  m/s^2
+double acceleration = 0;      //  m/s^2
 // 腳踏力
 double pedalTorque= 0;        //  N
 double pre_pedalTorque = 0;
 double pedalPower = 0;        //  N-m
 double pre_pedalPower = 0;
-// 馬查輸出
+// 馬達輸出
 double PWM = 0;
+// 模式開關
+boolean autoMode = true;
+// 助力控制參數
+double bestBikeSpeed = 17.6;
+double bestBikeSpeed_interval = 3;
+double lasttime;
 
 //********************************************
 // 建立裝置物件
@@ -80,13 +79,12 @@ LiquidCrystal LCD1602(pin_lcd_RS, pin_lcd_E, pin_lcd_D4, pin_lcd_D5, pin_lcd_D6,
 MPU6050 GY521;
 Hall Gear(pin_hall_1, gear_magnetN);
 Hall Wheel(pin_hall_2, wheel_magnetN);
-HC05 BT(baudrate);  //包含初始化BT模組
 
 //********************************************
 // 初始化設定
 //********************************************
 void setup() {
-  //設定baudrate(arduino)
+  //設定鮑率
   Serial.begin(baudrate);
   //中斷函式初始化
   //霍爾感測器--踏板
@@ -102,14 +100,23 @@ void setup() {
   pinMode(11, OUTPUT);
   //初始化剎車按鈕
   pinMode(pin_stop_anytime, INPUT);
+  //錯誤偵測
+  if(!Serial.available()) {
+    LCD1602.clear();
+    LCD1602.print("BT connect failed");
+    while(true);
+  }
+  if(!GY521.testConnection()) {
+    LCD1602.clear();
+    LCD1602.print("GY521 connect failed!");
+    while(true);
+  }
 }
 
 //********************************************
 // 主迴圈
 //********************************************
 void loop() {
-  // 更新狀態
-  drivesUpdate();
   // 看門狗
   if((millis()-Gear._nowTime)>5000) {
     Gear._preTime = 0;       //前一個時間點
@@ -124,11 +131,14 @@ void loop() {
     Wheel._nowAlpha = 0;
     lasttime = millis();
   }
+  // 更新狀態
+  drivesUpdate();
   // 剎車功能
   //  if(!pin_stop_anytime) {
-  //    autoMode = 0;
-  //  }else {
-  //    autoMode = 1;
+  //    autoMode = false;
+  //  }
+  //  else {
+  //    autoMode = true;
   //  }
   // 助力模式 or 非助力模式 
   // PWM輸出
